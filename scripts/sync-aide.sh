@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_SRC="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+SRC="${F_DESIGN_SRC:-$DEFAULT_SRC}"
+SRC_REAL="$(realpath "$SRC")"
+TARGETS=(
+  "${HOME}/.claude/skills/f-design"
+  "${HOME}/.cursor/skills/f-design"
+  "${HOME}/.qwen/skills/f-design"
+)
+
+if [[ ! -f "$SRC_REAL/SKILL.md" ]]; then
+  echo "Missing source skill: $SRC_REAL/SKILL.md" >&2
+  exit 1
+fi
+
+if ! command -v rsync >/dev/null 2>&1; then
+  echo "Missing required command: rsync" >&2
+  exit 1
+fi
+
+for target in "${TARGETS[@]}"; do
+  target_real="$(realpath -m "$target")"
+
+  if [[ "$target_real" == "$SRC_REAL" ]]; then
+    echo "Skipped source target $target_real"
+    continue
+  fi
+
+  if [[ "$target_real/" == "$SRC_REAL/"* ]]; then
+    echo "Refusing to sync into a subdirectory of source: $target_real" >&2
+    exit 1
+  fi
+
+  mkdir -p "$(dirname "$target")"
+  mkdir -p "$target"
+  rsync -a --delete \
+    --exclude='__pycache__/' \
+    --exclude='*.pyc' \
+    --exclude='.DS_Store' \
+    --exclude='*.tmp' \
+    "$SRC_REAL/" "$target_real/"
+  echo "Synced $target_real"
+done

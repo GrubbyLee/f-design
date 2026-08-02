@@ -1,0 +1,57 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate skill frontmatter
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path("SKILL.md").read_text(encoding="utf-8")
+          if not text.startswith("---\n"):
+              raise SystemExit("SKILL.md must start with YAML frontmatter")
+          end = text.find("\n---\n", 4)
+          if end == -1:
+              raise SystemExit("SKILL.md frontmatter is not closed")
+          frontmatter = text[4:end]
+          required = {"name:", "description:"}
+          missing = [item for item in required if item not in frontmatter]
+          if missing:
+              raise SystemExit(f"Missing frontmatter fields: {', '.join(missing)}")
+          if "name: f-design" not in frontmatter:
+              raise SystemExit("Expected skill name: f-design")
+          print("SKILL.md frontmatter OK")
+          PY
+
+      - name: Check shell scripts
+        run: |
+          bash -n scripts/*.sh
+
+      - name: Check Python scripts
+        run: |
+          python3 -m py_compile scripts/*.py
+
+      - name: Run environment detector
+        run: |
+          bash scripts/detect-frontend-env.sh .
+
+      - name: Check for local path leakage
+        run: |
+          if grep -RInE '/home/Arabica|gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]+' . \
+            --exclude-dir=.git \
+            --exclude='README.md' \
+            --exclude='README.zh-CN.md'; then
+            echo "::error::Found local path or token-looking string"
+            exit 1
+          fi
