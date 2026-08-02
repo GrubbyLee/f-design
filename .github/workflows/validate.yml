@@ -50,6 +50,7 @@ jobs:
         run: |
           if grep -RInE '/home/Arabica|gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]+' . \
             --exclude-dir=.git \
+            --exclude='validate.yml' \
             --exclude='README.md' \
             --exclude='README.zh-CN.md'; then
             echo "::error::Found local path or token-looking string"
