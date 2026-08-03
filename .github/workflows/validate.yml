@@ -41,6 +41,8 @@ jobs:
       - name: Check Python scripts
         run: |
           python3 -m py_compile scripts/*.py
+          python3 scripts/present-design.py --help >/dev/null
+          python3 -m unittest discover -s tests -v
 
       - name: Run environment detector
         run: |

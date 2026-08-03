@@ -1,6 +1,6 @@
 ---
 name: f-design
-description: Frontend design orchestrator and skill navigator. Use when the user invokes f-design, @f-design, /f-design, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, screenshot QA, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
+description: Frontend design orchestrator and skill navigator that scales design depth, produces and presents review artifacts, resolves approval gates, implements interfaces, and runs screenshot QA. Use when the user invokes f-design, @f-design, /f-design, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
 ---
 
 # F Design
@@ -59,7 +59,11 @@ If a helper is not visible in the current AIDE, say "not detected here" and cont
 
 Use this mode when the user gives a real frontend task.
 
-Do not start coding immediately unless the task is a tiny isolated UI fix. First produce a design read and concrete design system. For substantial work, build a viewable v0 before completing the full interface.
+Do not start coding immediately unless the task is a tiny isolated UI fix. First choose the design depth, produce and present the required design artifacts, and resolve any approval gate. For substantial work, build a viewable v0 before completing the full interface.
+
+Read `references/design-process.md` for new screens, major redesigns, ambiguous direction, workflow or information-architecture changes, brand-defining pages, or when the user asks to review design before implementation.
+
+Read `references/artifact-presentation.md` whenever creating an artifact for user review. A file is not presented until the user can immediately inspect it.
 
 ## Task Routing
 
@@ -103,9 +107,62 @@ When working inside a codebase, run `scripts/detect-frontend-env.sh` when helpfu
 bash scripts/detect-frontend-env.sh .
 ```
 
-### 2. Declare the design system
+### 2. Choose the design depth
 
-Before code, write:
+Classify the work before producing artifacts:
+
+- Level 0 - direct fix: isolated visual or component-state correction; preserve the existing design contract.
+- Level 1 - directed design: established product structure and visual language; write a concise brief and layout/state outline.
+- Level 2 - exploratory design: new product or major screen, workflow or information-architecture change, major redesign, ambiguous direction, or brand-defining work; produce a reviewable artifact and require confirmation.
+
+Use the lightest level that resolves the uncertainty. State the chosen level and why in one sentence.
+
+### 3. Define the experience
+
+Before visual styling, identify:
+
+- The user's primary job and most important workflow.
+- Information and action priority.
+- Required page regions, routes, states, and responsive behavior.
+- Product, brand, technical, accessibility, and content constraints.
+- Observable success criteria.
+
+For Level 1, provide a compact design brief and layout/state outline. For Level 2, map the primary flow and information architecture before choosing a visual direction. Read `references/design-process.md` for the artifact and approval rules.
+
+### 4. Select helper capabilities
+
+Before producing review artifacts or implementation, decide if auxiliary skills/tools are useful. Prefer the host's discovered names. Do not require the user to remember them. Read `references/helper-registry.md` when the selection is not obvious.
+
+- General polished web artifact: use `web-design-engineer` if available.
+- Landing page, portfolio, redesign taste correction: use `design-taste-frontend` if available.
+- UI audit, accessibility, best-practice review: use `web-design-guidelines` if available.
+- Browser screenshot/testing: use `webapp-testing` or local Playwright.
+- Complex motion: use `gsap`, `animejs`, `css-animations`, or `waapi` based on the project stack.
+- 3D/WebGL: use `three` if available.
+- Screenshot-to-code: use `image-to-code` or `yueban-image-to-code` if available.
+- Generated UI assets: use image generation skills only when the user asks for visual assets or the design requires them.
+
+If no helper is available, continue with native framework/CSS and state the fallback briefly.
+
+### 5. Explore, present, and confirm the direction
+
+For Level 2, present one recommended direction and up to two materially different alternatives when real alternatives exist. Use the lowest-cost artifact that answers the unresolved question: a layout outline, wireframe, standalone HTML prototype, screenshot or reference board, generated image, or motion prototype.
+
+Present every review artifact before applying the confirmation gate. Resolve `scripts/present-design.py` relative to the loaded skill directory and pass all HTML directions in one invocation. On a shared local desktop, use `open` for standalone HTML; use the managed `serve` command only when HTTP is required. In remote, container, SSH, or headless environments, never present agent-side `127.0.0.1` or `file://` URLs as user-accessible; use host-exposed links or attached screenshots. Read `references/artifact-presentation.md` for lifecycle and fallback rules.
+
+When a confirmation gate applies:
+
+1. Verify that the user has an immediately usable way to inspect each artifact.
+2. Show the choices and give a recommendation.
+3. Ask the user to approve, choose, or propose changes.
+4. Stop implementation while the decision is pending.
+5. Restate the approved design contract before continuing.
+
+Do not create a review artifact and then continue coding past it in the same turn. Skip the pause for Level 0, clearly directed Level 1 work, or when the user explicitly grants autonomous design authority.
+
+### 6. Declare the design system
+
+Before implementation, write:
 
 - Product role: operational tool, dashboard, editor, landing page, content site, prototype, etc.
 - Audience and use frequency.
@@ -120,22 +177,9 @@ Before code, write:
 
 For operational tools, admin panels, creator dashboards, and editors, prefer dense but calm working screens over marketing heroes, decorative cards, and large empty sections.
 
-### 3. Select helper capabilities
+For approved Level 2 work, include the chosen page structure, responsive behavior, critical states, accepted tradeoffs, and rejected directions in the design contract. If review artifacts used provisional visual tokens, replace them with the approved system.
 
-Before implementation, decide if auxiliary skills/tools are useful. Prefer the host's discovered names. Do not require the user to remember them. Read `references/helper-registry.md` when the selection is not obvious.
-
-- General polished web artifact: use `web-design-engineer` if available.
-- Landing page, portfolio, redesign taste correction: use `design-taste-frontend` if available.
-- UI audit, accessibility, best-practice review: use `web-design-guidelines` if available.
-- Browser screenshot/testing: use `webapp-testing` or local Playwright.
-- Complex motion: use `gsap`, `animejs`, `css-animations`, or `waapi` based on the project stack.
-- 3D/WebGL: use `three` if available.
-- Screenshot-to-code: use `image-to-code` or `yueban-image-to-code` if available.
-- Generated UI assets: use image generation skills only when the user asks for visual assets or the design requires them.
-
-If no helper is available, continue with native framework/CSS and state the fallback briefly.
-
-### 4. Build a v0 first
+### 7. Build the approved v0
 
 For new screens or major redesigns, implement a v0 with:
 
@@ -145,9 +189,9 @@ For new screens or major redesigns, implement a v0 with:
 - Key empty/loading/error states if they affect layout.
 - Placeholder assets only when real assets are unavailable.
 
-Stop after v0 only if the user asked to confirm direction. Otherwise continue when the user granted autonomy.
+Treat an approved HTML prototype as the v0 when it uses the target stack and is suitable to continue. Otherwise, build the v0 from the approved design contract. Stop after v0 only when the user requested an additional implementation checkpoint.
 
-### 5. Full implementation
+### 8. Full implementation
 
 Follow the existing stack and code style first. Check `package.json` before importing libraries. Do not add a new UI library unless the project lacks one and the dependency is justified.
 
@@ -163,7 +207,7 @@ Implementation rules:
 - Avoid default AI-purple/blue gradients unless brand-justified.
 - Do not make a landing page when the user asked for a product, app, dashboard, tool, or editor; make the usable screen first.
 
-### 6. Screenshot QA
+### 9. Screenshot QA
 
 After implementation, run the local app and capture at least:
 
@@ -181,7 +225,7 @@ Inspect screenshots before final. Check text overflow, overlapping UI, broken sp
 
 If reviewing a built artifact, read `references/review-rubric.md`.
 
-### 7. No-Ship Gates
+### 10. No-Ship Gates
 
 Do not claim completion when any required gate fails:
 
@@ -190,26 +234,33 @@ Do not claim completion when any required gate fails:
 - Mobile layout has obvious overflow, overlap, or unusable navigation.
 - Text is clipped inside buttons, cards, tabs, or fixed-size controls.
 - The result ignores the declared design read.
+- A review artifact was generated but not opened, attached, or exposed through a usable absolute link or URL.
+- Only a relative artifact path was provided for a confirmation gate.
+- A required confirmation gate was skipped or is still pending.
+- The implementation materially diverges from the approved design contract without resolving the change.
 - Typecheck/build/lint fails and the failure is related to the change.
 - The page looks like a generic AI SaaS template after logo/text substitution.
 
 For substantial UI work, self-score before final:
 
 ```text
-Hierarchy: 0-10
-Consistency: 0-10
-Mobile: 0-10
+Direction fit: 0-10
+Task flow: 0-10
+Visual hierarchy: 0-10
+Craft: 0-10
 Usability: 0-10
+Responsiveness: 0-10
 Originality: 0-10
 ```
 
 If any score is below 8, revise before delivery or clearly report why it cannot be fixed in this pass.
 
-### 8. Final response
+### 11. Final response
 
 Report:
 
 - What changed.
+- Design depth, review artifacts, presentation method, and approval outcome when a confirmation gate applied.
 - Where to open it.
 - Screenshot/device checks performed.
 - Tests or type checks run.

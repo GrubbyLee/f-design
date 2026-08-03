@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/f-design-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/f-design-logo-light.svg">
+    <img alt="f-design - 前端设计总控" src="assets/f-design-logo-light.svg" width="560">
+  </picture>
+</p>
+
 # f-design
 
 [English](README.md) | 简体中文
@@ -18,9 +26,13 @@
 - 支持两种模式：
   - **导航模式**：没有具体需求时，不写代码，主动列出当前环境可做的前端任务和辅助 skill。
   - **执行模式**：有具体需求时，按设计判断、设计系统、v0、实现、截图 QA 的流程推进。
+- 根据不确定性与返工成本，将设计过程分为直接修复、定向设计和探索式设计。
+- 必要时产出并呈现线框稿、独立 HTML 原型、参考板、图片或动效样片等可评审材料。
+- 在共享本机桌面自动打开独立 HTML；需要 HTTP 时管理后台评审服务；远程环境使用宿主可访问链接或截图。
+- 在明确的确认门暂停，让用户在高成本实现前确认、选择方向或提出修改。
 - 能分流后台、管理端、工具界面、落地页、重设计、截图还原、移动端、动效、3D、UI 审查等任务。
 - 支持项目级和本机级偏好文件，不把个人偏好写死进开源 skill。
-- 内置前端环境探测、截图 QA、跨 AIDE 本地同步脚本。
+- 内置前端环境探测、设计稿呈现、截图 QA、跨 AIDE 本地同步脚本。
 
 ## 快速开始
 
@@ -97,12 +109,17 @@ f-design is ready. Pick a frontend task:
 agent 应该按这个流程推进：
 
 1. 读取产品上下文。
-2. 写出设计判断和设计系统，再开始编码。
-3. 选择最少但必要的辅助能力。
-4. 对较大任务先做可浏览 v0。
-5. 遵循现有技术栈和代码风格完成实现。
-6. 对桌面、平板、手机进行截图 QA。
-7. 通过 No-Ship Gates 后再声称完成。
+2. 选择 Level 0、1 或 2 的设计深度。
+3. 明确用户任务、信息优先级、页面结构、状态和成功标准。
+4. 选择最少但必要的辅助能力。
+5. 对探索式任务制作最低成本但足以判断的评审产物，自动打开或以其他方式呈现后等待用户确认。
+6. 锁定已确认的设计契约和设计系统。
+7. 对较大任务先做可浏览 v0。
+8. 遵循现有技术栈和代码风格完成实现。
+9. 对桌面、平板、手机进行截图 QA。
+10. 通过 No-Ship Gates 后再声称完成。
+
+确认机制按风险启用，不是每一步都打断用户。孤立修复和方向明确的任务可以连续推进；新产品、重大重设计、工作流变化、品牌关键页面，以及明确提交给用户评审的中间产物，必须在完整实现前获得确认。创建文件不等于完成呈现：必须让用户获得已打开的浏览器页面、会话内媒体，或可立即访问的绝对链接或 URL。
 
 ## 偏好文件
 
@@ -139,6 +156,22 @@ bash scripts/detect-frontend-env.sh .
 python3 scripts/capture-audit.py http://localhost:3000 --out .codex/frontend-audit
 ```
 
+自动打开一个或多个独立 HTML 评审产物并立即返回：
+
+```bash
+python3 scripts/present-design.py open \
+  ".codex/design/<design-id>/direction-a.html" \
+  ".codex/design/<design-id>/direction-b.html"
+```
+
+确实需要 HTTP 时，启动、检查并停止受管理的后台服务：
+
+```bash
+python3 scripts/present-design.py serve ".codex/design/<design-id>/prototype.html"
+python3 scripts/present-design.py status
+python3 scripts/present-design.py stop
+```
+
 同步本地 AIDE 副本：
 
 ```bash
@@ -154,15 +187,20 @@ bash scripts/sync-aide.sh
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── artifact-presentation.md
 │   ├── design-defaults.md
+│   ├── design-process.md
 │   ├── helper-registry.md
 │   ├── local-overrides.example.md
 │   ├── project-profile.example.md
 │   └── review-rubric.md
-└── scripts/
-    ├── capture-audit.py
-    ├── detect-frontend-env.sh
-    └── sync-aide.sh
+├── scripts/
+│   ├── capture-audit.py
+│   ├── detect-frontend-env.sh
+│   ├── present-design.py
+│   └── sync-aide.sh
+└── tests/
+    └── test_present_design.py
 ```
 
 ## 校验
@@ -172,10 +210,12 @@ bash scripts/sync-aide.sh
 ```bash
 bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
+python3 scripts/present-design.py --help >/dev/null
+python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-GitHub `validate.yml` workflow 会检查 skill frontmatter、脚本语法、Python 编译，以及是否意外包含本机路径。
+GitHub `validate.yml` workflow 还会检查 skill frontmatter、脚本语法、Python 编译、后台呈现生命周期、远程降级行为，以及是否意外包含本机路径。
 
 ## Gitee 镜像
 

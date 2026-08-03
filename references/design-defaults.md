@@ -2,6 +2,15 @@
 
 Use these defaults when no project or local preference file overrides them.
 
+## Process Defaults
+
+- Match design depth to uncertainty and reversal cost.
+- Use a concise brief and layout/state outline for established products.
+- Produce a reviewable artifact and obtain confirmation for exploratory, workflow-changing, or brand-defining work.
+- Automatically open local HTML when the agent and user share a desktop; otherwise use a host-accessible link or attached screenshots, never an agent-local loopback URL.
+- Once an artifact is presented for approval, pause until the user approves, chooses, or requests changes.
+- Use the lowest-cost artifact that resolves the open question; do not create polished mockups by habit.
+
 ## Product Defaults
 
 - Build the actual usable screen first for apps, dashboards, editors, and tools.

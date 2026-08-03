@@ -7,6 +7,7 @@ Use this when auditing a frontend artifact before delivery or when the user asks
 Score each category from 0 to 10. Anything below 8 needs revision unless the user asked for a rough prototype.
 
 - Direction fit: the UI matches the stated product, audience, and reference anchors.
+- Task flow: the primary workflow, information priority, states, and recovery paths support the user's job.
 - Visual hierarchy: the eye path is obvious; primary actions and key data dominate.
 - Craft: alignment, spacing, color count, typography, radius, shadow, and icon style are consistent.
 - Usability: common states exist; workflows are efficient; controls are recognizable.
@@ -25,6 +26,7 @@ Fix these before delivery:
 - Decorative layout makes an operational tool harder to use.
 - Placeholder assets are presented as finished assets.
 - The style drifts across sections.
+- The implementation materially contradicts the approved design contract.
 
 ## Fast Visual Audit
 

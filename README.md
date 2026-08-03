@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/f-design-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/f-design-logo-light.svg">
+    <img alt="f-design - Frontend Design Orchestration" src="assets/f-design-logo-light.svg" width="560">
+  </picture>
+</p>
+
 # f-design
 
 English | [简体中文](README.zh-CN.md)
@@ -18,9 +26,13 @@ Use it when you want fewer generic AI-looking interfaces and a more disciplined 
 - Supports two modes:
   - **Navigation mode**: invoked without a concrete task, it lists the best frontend tasks and helper skills available in the environment.
   - **Execution mode**: invoked with a real task, it follows a structured design-to-implementation workflow.
+- Scales the design process from direct fixes to exploratory design, based on uncertainty and the cost of reversing a decision.
+- Produces and presents reviewable artifacts such as wireframes, standalone HTML prototypes, reference boards, images, or motion studies when they are needed.
+- Automatically opens standalone HTML on a shared local desktop, manages HTTP review servers when needed, and uses host-accessible links or screenshots in remote environments.
+- Pauses at explicit confirmation gates so the user can approve, choose a direction, or request changes before expensive implementation.
 - Routes tasks such as dashboards, admin panels, landing pages, redesigns, screenshot-to-code work, mobile UI, animation, 3D, and UI reviews.
 - Uses project/local preference files without hard-coding personal taste into the public skill.
-- Provides reusable scripts for frontend environment detection, screenshot QA, and syncing the skill across local AIDE directories.
+- Provides reusable scripts for frontend environment detection, artifact presentation, screenshot QA, and syncing the skill across local AIDE directories.
 
 ## Quick Start
 
@@ -97,12 +109,17 @@ Use f-design to build a creator dashboard for reviewing generated media.
 the agent should follow this loop:
 
 1. Read product context.
-2. Declare a design read and design system before coding.
-3. Select the smallest useful helper capability set.
-4. Build a viewable v0 for substantial work.
-5. Complete implementation using the existing stack and conventions.
-6. Run screenshot QA on desktop, tablet, and mobile.
-7. Enforce no-ship gates before claiming completion.
+2. Choose Level 0, 1, or 2 design depth.
+3. Define the user's job, information priority, structure, states, and success criteria.
+4. Select the smallest useful helper capability set.
+5. For exploratory work, produce the lowest-cost useful review artifact, open or otherwise present it, and wait for user confirmation.
+6. Lock the approved design contract and design system.
+7. Build a viewable v0 for substantial work.
+8. Complete implementation using the existing stack and conventions.
+9. Run screenshot QA on desktop, tablet, and mobile.
+10. Enforce no-ship gates before claiming completion.
+
+Confirmation is proportional, not automatic. Isolated fixes and clearly directed work can continue without interruption. New products, major redesigns, workflow changes, brand-defining pages, or artifacts explicitly presented for review require approval before full implementation. Creating a file is not presentation: the user must receive an opened browser view, attached media, or an immediately usable absolute link or URL.
 
 ## Preference Files
 
@@ -139,6 +156,22 @@ Capture desktop/tablet/mobile screenshots:
 python3 scripts/capture-audit.py http://localhost:3000 --out .codex/frontend-audit
 ```
 
+Open one or more standalone HTML review artifacts and return immediately:
+
+```bash
+python3 scripts/present-design.py open \
+  ".codex/design/<design-id>/direction-a.html" \
+  ".codex/design/<design-id>/direction-b.html"
+```
+
+Start, inspect, and stop a managed background server when HTTP is required:
+
+```bash
+python3 scripts/present-design.py serve ".codex/design/<design-id>/prototype.html"
+python3 scripts/present-design.py status
+python3 scripts/present-design.py stop
+```
+
 Sync local AIDE copies:
 
 ```bash
@@ -154,15 +187,20 @@ bash scripts/sync-aide.sh
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── artifact-presentation.md
 │   ├── design-defaults.md
+│   ├── design-process.md
 │   ├── helper-registry.md
 │   ├── local-overrides.example.md
 │   ├── project-profile.example.md
 │   └── review-rubric.md
-└── scripts/
-    ├── capture-audit.py
-    ├── detect-frontend-env.sh
-    └── sync-aide.sh
+├── scripts/
+│   ├── capture-audit.py
+│   ├── detect-frontend-env.sh
+│   ├── present-design.py
+│   └── sync-aide.sh
+└── tests/
+    └── test_present_design.py
 ```
 
 ## Validation
@@ -172,10 +210,12 @@ Local checks:
 ```bash
 bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
+python3 scripts/present-design.py --help >/dev/null
+python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-The GitHub `validate.yml` workflow also checks the skill frontmatter, script syntax, Python compilation, and accidental local path leakage.
+The GitHub `validate.yml` workflow also checks the skill frontmatter, script syntax, Python compilation, managed presentation lifecycle, remote fallback behavior, and accidental local path leakage.
 
 ## Gitee Mirror
 

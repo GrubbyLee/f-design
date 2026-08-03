@@ -1,4 +1,4 @@
 interface:
   display_name: "F Design"
   short_description: "Frontend design workflow and skill navigator"
-  default_prompt: "Use $f-design to choose the right frontend workflow, design system, supporting skills, and screenshot QA path."
+  default_prompt: "Use $f-design to choose the design depth, produce and present review artifacts, resolve approval gates, implement the frontend, and run screenshot QA."
