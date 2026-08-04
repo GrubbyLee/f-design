@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">f-design mark</title>
-  <desc id="desc">A geometric F inside an interface frame, with its middle arm becoming a confirmation check.</desc>
-  <rect width="128" height="128" rx="24" fill="#102823"/>
-  <path d="M32 98V30H91" fill="none" stroke="#F4F7F3" stroke-width="16" stroke-linecap="square" stroke-linejoin="round"/>
-  <path d="M32 61L51 78L91 39" fill="none" stroke="#FF5C3A" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
-  <rect x="104" y="18" width="8" height="8" fill="#57D6A5"/>
+  <desc id="desc">Three nested interface rails represent the Level 0, Level 1, and Level 2 design depths while forming an F.</desc>
+  <path d="M10 12H118V32H30V116H10Z" fill="#2F43D3"/>
+  <path d="M38 44H118V64H58V116H38Z" fill="#161A22"/>
+  <path d="M66 76H118V96H66Z" fill="#FFC53D"/>
 </svg>
