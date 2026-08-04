@@ -10,13 +10,14 @@ Primary folder:
 ~/.codex/skills/f-design
 ```
 
-Keep this folder as the source of truth. Sync it to other AIDE skill folders when needed.
+Use the current repository as the source of truth. A conventional Codex installation uses the folder above; the sync script safely skips it when source and target are identical.
 
 ## Known Local Targets
 
-The following folders exist on this machine:
+Supported local skill roots:
 
 ```text
+~/.codex/skills
 ~/.claude/skills
 ~/.cursor/skills
 ~/.qwen/skills
@@ -25,6 +26,7 @@ The following folders exist on this machine:
 Recommended install paths:
 
 ```text
+~/.codex/skills/f-design
 ~/.claude/skills/f-design
 ~/.cursor/skills/f-design
 ~/.qwen/skills/f-design
@@ -46,7 +48,7 @@ Run:
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 ```
 
-The script copies the Codex source folder into Claude, Cursor, and Qwen skill directories.
+The script copies the source folder into Codex, Claude, Cursor, and Qwen skill directories. It skips any target that resolves to the source itself.
 
 Each target is a managed mirror. Files that no longer exist in the source are removed. Repository metadata, temporary review artifacts, generated Python caches, and `.f-design/profile.md` are excluded.
 

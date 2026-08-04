@@ -1,11 +1,24 @@
 ---
 name: f-design
-description: Frontend design orchestrator and skill navigator that scales design depth, produces and presents review artifacts, resolves approval gates, implements interfaces, and runs screenshot QA. Use when the user invokes f-design, @f-design, /f-design, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
+description: Frontend design and production engineering orchestrator that inventories projects, scales design depth, presents review artifacts, locks executable contracts, implements accessible responsive interfaces, and verifies interactions, visual regressions, and performance. Use when the user invokes f-design, @f-design, /f-design, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, production frontend quality, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
 ---
 
 # F Design
 
-Use this as the frontend entry skill. It is not a single visual style; it is the controller for frontend product thinking, implementation, auxiliary skill selection, and screenshot QA.
+Use this as the frontend entry skill. It is not a single visual style; it controls product thinking, approval, implementation, and production verification.
+
+## Reference Routing
+
+Read only the references required by the task:
+
+- Existing repository or substantial implementation: `references/project-intelligence.md`.
+- New screen, major redesign, ambiguous direction, or workflow change: `references/design-process.md`.
+- Any artifact created for user review: `references/artifact-presentation.md`.
+- Approved Level 2 or multi-state/multi-route implementation: `references/implementation-contract.md`.
+- API, form, permissions, async, mutation, or non-trivial state: `references/state-and-data.md`.
+- Stack-specific implementation decisions: matching section of `references/framework-adapters.md`.
+- Substantial implementation verification: `references/quality-gates.md`.
+- UI/UX review request: `references/review-rubric.md`.
 
 ## Context Files
 
@@ -61,9 +74,7 @@ Use this mode when the user gives a real frontend task.
 
 Do not start coding immediately unless the task is a tiny isolated UI fix. First choose the design depth, produce and present the required design artifacts, and resolve any approval gate. For substantial work, build a viewable v0 before completing the full interface.
 
-Read `references/design-process.md` for new screens, major redesigns, ambiguous direction, workflow or information-architecture changes, brand-defining pages, or when the user asks to review design before implementation.
-
-Read `references/artifact-presentation.md` whenever creating an artifact for user review. A file is not presented until the user can immediately inspect it.
+Use the reference routing above. A file is not presented until the user can immediately inspect it.
 
 ## Task Routing
 
@@ -101,11 +112,13 @@ Reading this as: <page/app type> for <audience>, with a <vibe> language, leaning
 
 Infer from the user request, repo, screenshots, existing CSS, `package.json`, named references, and business context. Ask one concise question only when the design direction genuinely splits.
 
-When working inside a codebase, run `scripts/detect-frontend-env.sh` when helpful:
+Before substantial work in a codebase, read `references/project-intelligence.md` and run:
 
 ```bash
-bash scripts/detect-frontend-env.sh .
+python3 scripts/inspect-project.py . --format markdown
 ```
+
+Inspect the reported entry routes, components, tokens, contracts, tests, scripts, and risks before selecting dependencies or files to edit. Use `scripts/detect-frontend-env.sh` only as a lightweight shell fallback.
 
 ### 2. Choose the design depth
 
@@ -126,6 +139,8 @@ Before visual styling, identify:
 - Required page regions, routes, states, and responsive behavior.
 - Product, brand, technical, accessibility, and content constraints.
 - Observable success criteria.
+
+For API, form, permission, async, mutation, or state-heavy work, read `references/state-and-data.md` and map loading, empty, partial, error, success, permission, pending, retry, and rollback behavior as relevant. Use representative edge-case fixtures rather than happy-path-only demo data.
 
 For Level 1, provide a compact design brief and layout/state outline. For Level 2, map the primary flow and information architecture before choosing a visual direction. Read `references/design-process.md` for the artifact and approval rules.
 
@@ -179,6 +194,8 @@ For operational tools, admin panels, creator dashboards, and editors, prefer den
 
 For approved Level 2 work, include the chosen page structure, responsive behavior, critical states, accepted tradeoffs, and rejected directions in the design contract. If review artifacts used provisional visual tokens, replace them with the approved system.
 
+For approved Level 2 work or any substantial multi-state, multi-route implementation, read `references/implementation-contract.md`, create `.codex/f-design/design-contract.json`, and validate it with `scripts/design-contract.py validate <contract> --require-approved` before coding. Do not mark a contract approved without user-reviewed artifact evidence.
+
 ### 7. Build the approved v0
 
 For new screens or major redesigns, implement a v0 with:
@@ -193,7 +210,7 @@ Treat an approved HTML prototype as the v0 when it uses the target stack and is 
 
 ### 8. Full implementation
 
-Follow the existing stack and code style first. Check `package.json` before importing libraries. Do not add a new UI library unless the project lacks one and the dependency is justified.
+Follow the existing stack and code style first. Check `package.json` before importing libraries. Read only the matching section of `references/framework-adapters.md`. Do not add a new UI library unless the project lacks one and the dependency is justified.
 
 Implementation rules:
 
@@ -201,15 +218,36 @@ Implementation rules:
 - Avoid nested cards and section-as-card page structure.
 - Use icons from the existing icon family; do not hand-roll SVG icons.
 - Implement hover, focus, disabled, loading, empty, error, and long-text states where relevant.
+- Preserve semantic HTML, accessible names, complete keyboard behavior, focus management, contrast, zoom/reflow, reduced motion, and status/error announcements.
 - Keep text inside buttons and fixed UI elements stable across breakpoints.
 - Use CSS Grid for page structure when flex width math would be fragile.
 - Do not use viewport-scaled font sizes.
 - Avoid default AI-purple/blue gradients unless brand-justified.
 - Do not make a landing page when the user asked for a product, app, dashboard, tool, or editor; make the usable screen first.
 
-### 9. Screenshot QA
+### 9. Run and Present the Implementation
 
-After implementation, run the local app and capture at least:
+Use the project's existing development command. When a managed background preview is useful, start it with:
+
+```bash
+python3 scripts/run-preview.py start \
+  --command "npm run dev -- --host 127.0.0.1" \
+  --url http://127.0.0.1:3000
+```
+
+Use `status` and `stop` on the same script. On a shared desktop, allow it to open the browser automatically. In remote/headless environments, provide only a host-exposed URL or attached screenshots; do not claim that agent-side loopback is user-accessible.
+
+### 10. Production QA
+
+After implementation, read `references/quality-gates.md`. For substantial work, encode critical flows, states, breakpoints, accessibility requirements, performance budgets, and visual baselines in the approved contract, then run:
+
+```bash
+python3 scripts/verify-ui.py http://127.0.0.1:3000 \
+  --contract .codex/f-design/design-contract.json \
+  --project-root .
+```
+
+At minimum capture and inspect:
 
 - Desktop: `1440x900`
 - Tablet: `1024x768`
@@ -221,11 +259,11 @@ Use `scripts/capture-audit.py` when helpful:
 python3 scripts/capture-audit.py http://localhost:3000 --out .codex/frontend-audit
 ```
 
-Inspect screenshots before final. Check text overflow, overlapping UI, broken spacing, unreadable contrast, mobile navigation, blank canvases, and whether the page still matches the design read.
+Inspect screenshots and generated diffs before final. Check text overflow, overlapping UI, broken spacing, unreadable contrast, mobile navigation, blank canvases, critical state coverage, and whether the page still matches the approved contract.
 
 If reviewing a built artifact, read `references/review-rubric.md`.
 
-### 10. No-Ship Gates
+### 11. No-Ship Gates
 
 Do not claim completion when any required gate fails:
 
@@ -239,6 +277,8 @@ Do not claim completion when any required gate fails:
 - A required confirmation gate was skipped or is still pending.
 - The implementation materially diverges from the approved design contract without resolving the change.
 - Typecheck/build/lint fails and the failure is related to the change.
+- A declared interaction, state, accessibility, visual regression, console-error, or performance gate fails.
+- Strict production verification was weakened with `--allow-missing-tools`.
 - The page looks like a generic AI SaaS template after logo/text substitution.
 
 For substantial UI work, self-score before final:
@@ -255,7 +295,7 @@ Originality: 0-10
 
 If any score is below 8, revise before delivery or clearly report why it cannot be fixed in this pass.
 
-### 11. Final response
+### 12. Final response
 
 Report:
 
@@ -263,7 +303,7 @@ Report:
 - Design depth, review artifacts, presentation method, and approval outcome when a confirmation gate applied.
 - Where to open it.
 - Screenshot/device checks performed.
-- Tests or type checks run.
+- Interaction, accessibility, visual, performance, build, lint, typecheck, and test checks actually run.
 - Remaining risks if anything could not be verified.
 
 Keep the response concise.

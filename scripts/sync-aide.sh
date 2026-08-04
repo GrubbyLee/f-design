@@ -7,6 +7,7 @@ SRC="${F_DESIGN_SRC:-$DEFAULT_SRC}"
 SRC_REAL="$(realpath "$SRC")"
 TARGET_HOME="${F_DESIGN_TARGET_HOME:-$HOME}"
 TARGETS=(
+  "${TARGET_HOME}/.codex/skills/f-design"
   "${TARGET_HOME}/.claude/skills/f-design"
   "${TARGET_HOME}/.cursor/skills/f-design"
   "${TARGET_HOME}/.qwen/skills/f-design"

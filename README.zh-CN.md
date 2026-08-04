@@ -16,7 +16,7 @@
 
 > 面向 Codex、Claude Code、Cursor、Qwen Code 及其他 AI 开发环境的前端设计总控 skill。
 
-`f-design` 不是又一个 UI 风格预设，而是一个前端总控 skill：它帮助 AI 编程助手读取产品上下文、判断设计方向、选择辅助 skill、构建 v0、完成实现，并在交付前进行截图验收。
+`f-design` 不是又一个 UI 风格预设，而是一个前端设计与生产工程总控 skill：它帮助 AI 编程助手理解仓库、判断并呈现设计方向、锁定可执行契约、完成实现，并在交付前验证行为与质量。
 
 它的目标是减少模板化、AI 味明显的前端界面，让前端设计和开发形成稳定闭环。
 
@@ -31,8 +31,13 @@
 - 在共享本机桌面自动打开独立 HTML；需要 HTTP 时管理后台评审服务；远程环境使用宿主可访问链接或截图。
 - 在明确的确认门暂停，让用户在高成本实现前确认、选择方向或提出修改。
 - 能分流后台、管理端、工具界面、落地页、重设计、截图还原、移动端、动效、3D、UI 审查等任务。
+- 在较大实现前盘点框架、路由、组件、Token、数据契约、测试工具与项目风险。
+- 将已确认设计转成机器可校验的契约，覆盖流程、状态、断点、可访问性、性能预算、数据 Schema、视觉基线和确认凭证。
+- 使用 Playwright 在各响应式断点验证交互，并检查控制台、溢出、axe 可访问性、截图差异、浏览器指标和可选 Lighthouse 门槛。
+- 提供状态/数据规范，以及 React/Next/Remix、Vue/Nuxt、SvelteKit、Angular、静态 HTML 和移动 WebView 的适配指南。
+- 以受管理方式启动真实开发服务器，支持健康检查、自动开浏览器、日志、状态查询和安全清理。
 - 支持项目级和本机级偏好文件，不把个人偏好写死进开源 skill。
-- 内置前端环境探测、设计稿呈现、截图 QA、跨 AIDE 本地同步脚本。
+- 内置项目扫描、设计稿呈现、契约校验、应用预览、交互 QA、视觉差异、截图和跨 AIDE 同步脚本。
 
 ## 快速开始
 
@@ -42,7 +47,7 @@
 git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
 ```
 
-可选：同步到 Claude Code、Cursor、Qwen Code 的本地 skill 目录：
+将同一 skill 同步到 Codex、Claude Code、Cursor、Qwen Code 的本地 skill 目录：
 
 ```bash
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
@@ -50,9 +55,10 @@ bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 
 目标 `f-design` 目录按受管理镜像处理：同步会删除过期文件，同时排除 `.git`、`.codex`、Python 缓存和私有 `.f-design/profile.md`。
 
-同步目标：
+同步目标如下；若源目录本身就是某个目标，该目标会自动跳过：
 
 ```text
+~/.codex/skills/f-design
 ~/.claude/skills/f-design
 ~/.cursor/skills/f-design
 ~/.qwen/skills/f-design
@@ -110,16 +116,18 @@ f-design is ready. Pick a frontend task:
 
 agent 应该按这个流程推进：
 
-1. 读取产品上下文。
+1. 盘点项目并读取产品上下文。
 2. 选择 Level 0、1 或 2 的设计深度。
-3. 明确用户任务、信息优先级、页面结构、状态和成功标准。
+3. 明确用户任务、信息优先级、页面结构、状态、数据和成功标准。
 4. 选择最少但必要的辅助能力。
 5. 对探索式任务制作最低成本但足以判断的评审产物，自动打开或以其他方式呈现后等待用户确认。
-6. 锁定已确认的设计契约和设计系统。
+6. 记录已确认的设计系统和可执行实现契约。
 7. 对较大任务先做可浏览 v0。
-8. 遵循现有技术栈和代码风格完成实现。
-9. 对桌面、平板、手机进行截图 QA。
-10. 通过 No-Ship Gates 后再声称完成。
+8. 按检测到的框架和仓库规范完成实现。
+9. 必要时启动并呈现受管理的应用预览。
+10. 完成交互、状态、可访问性、响应式、视觉、控制台和性能 QA。
+11. 运行仓库的 build、lint、typecheck 和测试。
+12. 通过 No-Ship Gates 后再声称完成。
 
 确认机制按风险启用，不是每一步都打断用户。孤立修复和方向明确的任务可以连续推进；新产品、重大重设计、工作流变化、品牌关键页面，以及明确提交给用户评审的中间产物，必须在完整实现前获得确认。创建文件不等于完成呈现：必须让用户获得已打开的浏览器页面、会话内媒体，或可立即访问的绝对链接或 URL。
 
@@ -146,7 +154,41 @@ references/local-overrides.example.md
 
 ## 脚本
 
-探测前端环境：
+生成结构化项目情报：
+
+```bash
+python3 scripts/inspect-project.py . --format markdown
+```
+
+创建并校验可执行设计契约：
+
+```bash
+python3 scripts/design-contract.py init --out .codex/f-design/design-contract.json
+python3 scripts/design-contract.py validate .codex/f-design/design-contract.json --project-root . --require-approved
+```
+
+启动、检查并停止真实应用预览：
+
+```bash
+python3 scripts/run-preview.py start --command "npm run dev" --url http://127.0.0.1:3000
+python3 scripts/run-preview.py status
+python3 scripts/run-preview.py stop
+```
+
+运行契约驱动的浏览器 QA：
+
+```bash
+python3 scripts/verify-ui.py http://127.0.0.1:3000 \
+  --contract .codex/f-design/design-contract.json --project-root .
+```
+
+将当前截图与视觉基线比较：
+
+```bash
+python3 scripts/visual-diff.py baseline.png current.png --diff-out diff.png
+```
+
+运行轻量前端环境探测：
 
 ```bash
 bash scripts/detect-frontend-env.sh .
@@ -190,19 +232,32 @@ bash scripts/sync-aide.sh
 ├── references/
 │   ├── aide-integration.md
 │   ├── artifact-presentation.md
+│   ├── design-contract.schema.json
 │   ├── design-defaults.md
 │   ├── design-process.md
+│   ├── framework-adapters.md
 │   ├── helper-registry.md
+│   ├── implementation-contract.md
 │   ├── local-overrides.example.md
+│   ├── project-intelligence.md
 │   ├── project-profile.example.md
+│   ├── quality-gates.md
+│   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
 │   ├── capture-audit.py
+│   ├── design-contract.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
-│   └── sync-aide.sh
+│   ├── inspect-project.py
+│   ├── run-preview.py
+│   ├── sync-aide.sh
+│   ├── verify-ui.py
+│   └── visual-diff.py
 └── tests/
+    ├── fixtures/quality/
     ├── test_present_design.py
+    ├── test_quality_pipeline.py
     └── test_support_scripts.py
 ```
 
@@ -215,11 +270,12 @@ bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
 python3 scripts/present-design.py --help >/dev/null
 python3 scripts/capture-audit.py --help >/dev/null
+python3 scripts/design-contract.py validate tests/fixtures/quality/design-contract.json --project-root . --require-approved
 python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-GitHub `validate.yml` workflow 还会检查 skill frontmatter、脚本语法、Python 编译、后台呈现生命周期、远程降级、截图目标解析、环境探测、隔离的跨 AIDE 同步，以及是否意外包含本机路径。
+GitHub `validate.yml` 还会对测试契约执行严格浏览器质量任务，覆盖 Playwright Chromium、axe-core、响应式状态/键盘流程、截图与 Lighthouse，并将验证报告和截图上传为 workflow artifact。
 
 ## Gitee 镜像
 

@@ -43,6 +43,15 @@ jobs:
           python3 -m py_compile scripts/*.py
           python3 scripts/present-design.py --help >/dev/null
           python3 scripts/capture-audit.py --help >/dev/null
+          python3 scripts/inspect-project.py --help >/dev/null
+          python3 scripts/design-contract.py --help >/dev/null
+          python3 scripts/run-preview.py --help >/dev/null
+          python3 scripts/visual-diff.py --help >/dev/null
+          python3 scripts/verify-ui.py --help >/dev/null
+          python3 scripts/design-contract.py validate \
+            tests/fixtures/quality/design-contract.json \
+            --project-root . \
+            --require-approved
           python3 -m unittest discover -s tests -v
 
       - name: Run environment detector
@@ -59,3 +68,61 @@ jobs:
             echo "::error::Found local path or token-looking string"
             exit 1
           fi
+
+  browser-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install browser quality tools
+        run: |
+          python3 -m pip install "playwright>=1.50,<2" "Pillow>=10,<12" "jsonschema>=4,<5"
+          python3 -m playwright install --with-deps chromium
+          npm install --no-save axe-core@4 lighthouse@12
+          echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
+          python3 - <<'PY' >> "$GITHUB_ENV"
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as playwright:
+              print(f"CHROME_PATH={playwright.chromium.executable_path}")
+          PY
+
+      - name: Start quality fixture preview
+        run: |
+          python3 scripts/run-preview.py start \
+            --command "python3 -m http.server 4173 --bind 127.0.0.1" \
+            --url http://127.0.0.1:4173/tests/fixtures/quality/ \
+            --browser never \
+            --wait 10
+
+      - name: Run strict contract-driven browser verification
+        run: |
+          python3 scripts/verify-ui.py http://127.0.0.1:4173/tests/fixtures/quality/ \
+            --contract tests/fixtures/quality/design-contract.json \
+            --project-root . \
+            --out .codex/f-design/verification
+
+      - name: Stop quality fixture preview
+        if: always()
+        run: |
+          python3 scripts/run-preview.py stop
+
+      - name: Upload browser quality evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f-design-browser-quality
+          path: |
+            .codex/f-design/verification
+            .codex/f-design/preview.log
+          if-no-files-found: warn

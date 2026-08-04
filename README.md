@@ -16,7 +16,7 @@ English | [简体中文](README.zh-CN.md)
 
 > A frontend design orchestration skill for Codex, Claude Code, Cursor, Qwen Code, and other AI development environments.
 
-`f-design` is not another UI style preset. It is a frontend control skill: it helps an AI coding agent read product context, choose a design direction, select helper skills, build a v0, implement the UI, and verify the result with screenshots before delivery.
+`f-design` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
 
 Use it when you want fewer generic AI-looking interfaces and a more disciplined frontend design/development loop.
 
@@ -31,8 +31,13 @@ Use it when you want fewer generic AI-looking interfaces and a more disciplined 
 - Automatically opens standalone HTML on a shared local desktop, manages HTTP review servers when needed, and uses host-accessible links or screenshots in remote environments.
 - Pauses at explicit confirmation gates so the user can approve, choose a direction, or request changes before expensive implementation.
 - Routes tasks such as dashboards, admin panels, landing pages, redesigns, screenshot-to-code work, mobile UI, animation, 3D, and UI reviews.
+- Inventories frameworks, routes, components, tokens, data contracts, test tools, and project risks before substantial implementation.
+- Turns approved designs into machine-validated contracts covering flows, states, breakpoints, accessibility, performance budgets, data schemas, visual baselines, and approval evidence.
+- Verifies declared interactions at responsive breakpoints with Playwright, console and overflow checks, axe accessibility audits, screenshot comparison, browser metrics, and optional Lighthouse gates.
+- Provides state/data guidance and adapters for React/Next/Remix, Vue/Nuxt, SvelteKit, Angular, static HTML, and embedded mobile web.
+- Starts real development servers as managed previews with health checks, browser opening, logs, status, and safe cleanup.
 - Uses project/local preference files without hard-coding personal taste into the public skill.
-- Provides reusable scripts for frontend environment detection, artifact presentation, screenshot QA, and syncing the skill across local AIDE directories.
+- Provides deterministic scripts for project inspection, artifact presentation, contract validation, application previews, interaction QA, visual diffs, screenshot capture, and cross-AIDE syncing.
 
 ## Quick Start
 
@@ -42,7 +47,7 @@ Install for Codex:
 git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
 ```
 
-Optional: sync the same skill to Claude Code, Cursor, and Qwen Code local skill directories:
+Synchronize the same skill across Codex, Claude Code, Cursor, and Qwen Code local skill directories:
 
 ```bash
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
@@ -50,9 +55,10 @@ bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 
 The target `f-design` directories are managed mirrors: stale files are removed, while `.git`, `.codex`, generated Python caches, and private `.f-design/profile.md` files are excluded.
 
-The sync script copies the current `f-design` folder to:
+The sync script copies the current `f-design` folder to these managed targets. When the source already equals a target, that target is skipped.
 
 ```text
+~/.codex/skills/f-design
 ~/.claude/skills/f-design
 ~/.cursor/skills/f-design
 ~/.qwen/skills/f-design
@@ -110,16 +116,18 @@ Use f-design to build a creator dashboard for reviewing generated media.
 
 the agent should follow this loop:
 
-1. Read product context.
+1. Inventory the project and read product context.
 2. Choose Level 0, 1, or 2 design depth.
-3. Define the user's job, information priority, structure, states, and success criteria.
+3. Define the user's job, information priority, structure, states, data, and success criteria.
 4. Select the smallest useful helper capability set.
-5. For exploratory work, produce the lowest-cost useful review artifact, open or otherwise present it, and wait for user confirmation.
-6. Lock the approved design contract and design system.
+5. For exploratory work, produce the lowest-cost useful review artifact, present it, and wait for user confirmation.
+6. Record the approved design system and executable implementation contract.
 7. Build a viewable v0 for substantial work.
-8. Complete implementation using the existing stack and conventions.
-9. Run screenshot QA on desktop, tablet, and mobile.
-10. Enforce no-ship gates before claiming completion.
+8. Implement using the detected framework and repository conventions.
+9. Start and present a managed application preview when useful.
+10. Run interaction, state, accessibility, responsive, visual, console, and performance QA.
+11. Run the repository's build, lint, typecheck, and tests.
+12. Enforce no-ship gates before claiming completion.
 
 Confirmation is proportional, not automatic. Isolated fixes and clearly directed work can continue without interruption. New products, major redesigns, workflow changes, brand-defining pages, or artifacts explicitly presented for review require approval before full implementation. Creating a file is not presentation: the user must receive an opened browser view, attached media, or an immediately usable absolute link or URL.
 
@@ -146,7 +154,41 @@ Do not commit private names, paths, API keys, or personal taste to the public sk
 
 ## Scripts
 
-Detect a frontend environment:
+Generate structured project intelligence:
+
+```bash
+python3 scripts/inspect-project.py . --format markdown
+```
+
+Create and validate an executable design contract:
+
+```bash
+python3 scripts/design-contract.py init --out .codex/f-design/design-contract.json
+python3 scripts/design-contract.py validate .codex/f-design/design-contract.json --project-root . --require-approved
+```
+
+Start, inspect, and stop a real application preview:
+
+```bash
+python3 scripts/run-preview.py start --command "npm run dev" --url http://127.0.0.1:3000
+python3 scripts/run-preview.py status
+python3 scripts/run-preview.py stop
+```
+
+Run contract-driven browser QA:
+
+```bash
+python3 scripts/verify-ui.py http://127.0.0.1:3000 \
+  --contract .codex/f-design/design-contract.json --project-root .
+```
+
+Compare a screenshot against a visual baseline:
+
+```bash
+python3 scripts/visual-diff.py baseline.png current.png --diff-out diff.png
+```
+
+Run lightweight frontend environment detection:
 
 ```bash
 bash scripts/detect-frontend-env.sh .
@@ -190,19 +232,32 @@ bash scripts/sync-aide.sh
 ├── references/
 │   ├── aide-integration.md
 │   ├── artifact-presentation.md
+│   ├── design-contract.schema.json
 │   ├── design-defaults.md
 │   ├── design-process.md
+│   ├── framework-adapters.md
 │   ├── helper-registry.md
+│   ├── implementation-contract.md
 │   ├── local-overrides.example.md
+│   ├── project-intelligence.md
 │   ├── project-profile.example.md
+│   ├── quality-gates.md
+│   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
 │   ├── capture-audit.py
+│   ├── design-contract.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
-│   └── sync-aide.sh
+│   ├── inspect-project.py
+│   ├── run-preview.py
+│   ├── sync-aide.sh
+│   ├── verify-ui.py
+│   └── visual-diff.py
 └── tests/
+    ├── fixtures/quality/
     ├── test_present_design.py
+    ├── test_quality_pipeline.py
     └── test_support_scripts.py
 ```
 
@@ -215,11 +270,12 @@ bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
 python3 scripts/present-design.py --help >/dev/null
 python3 scripts/capture-audit.py --help >/dev/null
+python3 scripts/design-contract.py validate tests/fixtures/quality/design-contract.json --project-root . --require-approved
 python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-The GitHub `validate.yml` workflow also checks the skill frontmatter, script syntax, Python compilation, managed presentation lifecycle, remote fallback behavior, capture target normalization, environment detection, isolated cross-AIDE syncing, and accidental local path leakage.
+The GitHub `validate.yml` workflow also runs a strict browser-quality job against the fixture contract with Playwright Chromium, axe-core, responsive state/keyboard flows, screenshots, and Lighthouse. Verification reports and screenshots are uploaded as workflow artifacts.
 
 ## Gitee Mirror
 

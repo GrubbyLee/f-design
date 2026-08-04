@@ -126,7 +126,7 @@ class SyncAideTest(unittest.TestCase):
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
-            for aide in (".claude", ".cursor", ".qwen"):
+            for aide in (".codex", ".claude", ".cursor", ".qwen"):
                 target = target_home / aide / "skills" / "f-design"
                 self.assertEqual(
                     (target / "SKILL.md").read_text(encoding="utf-8"),
