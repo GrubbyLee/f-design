@@ -48,6 +48,27 @@ bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 
 The script copies the Codex source folder into Claude, Cursor, and Qwen skill directories.
 
+Each target is a managed mirror. Files that no longer exist in the source are removed. Repository metadata, temporary review artifacts, generated Python caches, and `.f-design/profile.md` are excluded.
+
+For an isolated verification or managed environment, redirect only the target root:
+
+```bash
+F_DESIGN_TARGET_HOME=/path/to/sandbox \
+  bash ~/.codex/skills/f-design/scripts/sync-aide.sh
+```
+
+The source can be overridden independently with `F_DESIGN_SRC`.
+
+## Compatibility Verification
+
+Use three levels of evidence and report them separately:
+
+1. **Installed:** the AIDE CLI and its `f-design/SKILL.md` path exist.
+2. **Synchronized:** the installed copy matches the source after documented exclusions.
+3. **Invoked:** the AIDE is asked to use `f-design` and demonstrates navigation or execution behavior in a real session.
+
+Do not report version checks or file synchronization as successful invocation. Real invocation may contact an external model provider, so run it only when that external request is authorized.
+
 ## Project And Local Preferences
 
 Portable default rules live in the skill folder. Personal preferences should stay outside the public skill source:

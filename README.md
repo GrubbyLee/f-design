@@ -48,6 +48,8 @@ Optional: sync the same skill to Claude Code, Cursor, and Qwen Code local skill 
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 ```
 
+The target `f-design` directories are managed mirrors: stale files are removed, while `.git`, `.codex`, generated Python caches, and private `.f-design/profile.md` files are excluded.
+
 The sync script copies the current `f-design` folder to:
 
 ```text
@@ -200,7 +202,8 @@ bash scripts/sync-aide.sh
 │   ├── present-design.py
 │   └── sync-aide.sh
 └── tests/
-    └── test_present_design.py
+    ├── test_present_design.py
+    └── test_support_scripts.py
 ```
 
 ## Validation
@@ -211,11 +214,12 @@ Local checks:
 bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
 python3 scripts/present-design.py --help >/dev/null
+python3 scripts/capture-audit.py --help >/dev/null
 python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-The GitHub `validate.yml` workflow also checks the skill frontmatter, script syntax, Python compilation, managed presentation lifecycle, remote fallback behavior, and accidental local path leakage.
+The GitHub `validate.yml` workflow also checks the skill frontmatter, script syntax, Python compilation, managed presentation lifecycle, remote fallback behavior, capture target normalization, environment detection, isolated cross-AIDE syncing, and accidental local path leakage.
 
 ## Gitee Mirror
 

@@ -48,6 +48,8 @@ git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
 ```
 
+目标 `f-design` 目录按受管理镜像处理：同步会删除过期文件，同时排除 `.git`、`.codex`、Python 缓存和私有 `.f-design/profile.md`。
+
 同步目标：
 
 ```text
@@ -200,7 +202,8 @@ bash scripts/sync-aide.sh
 │   ├── present-design.py
 │   └── sync-aide.sh
 └── tests/
-    └── test_present_design.py
+    ├── test_present_design.py
+    └── test_support_scripts.py
 ```
 
 ## 校验
@@ -211,11 +214,12 @@ bash scripts/sync-aide.sh
 bash -n scripts/*.sh
 python3 -m py_compile scripts/*.py
 python3 scripts/present-design.py --help >/dev/null
+python3 scripts/capture-audit.py --help >/dev/null
 python3 -m unittest discover -s tests -v
 bash scripts/detect-frontend-env.sh .
 ```
 
-GitHub `validate.yml` workflow 还会检查 skill frontmatter、脚本语法、Python 编译、后台呈现生命周期、远程降级行为，以及是否意外包含本机路径。
+GitHub `validate.yml` workflow 还会检查 skill frontmatter、脚本语法、Python 编译、后台呈现生命周期、远程降级、截图目标解析、环境探测、隔离的跨 AIDE 同步，以及是否意外包含本机路径。
 
 ## Gitee 镜像
 

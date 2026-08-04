@@ -6,14 +6,6 @@ import shutil
 import sys
 from urllib.parse import urlparse
 
-try:
-    from playwright.sync_api import sync_playwright
-except ModuleNotFoundError:
-    pw_python = shutil.which("pw-python")
-    if pw_python and pathlib.Path(sys.executable).name != "pw-python":
-        os.execvp(pw_python, [pw_python, *sys.argv])
-    raise
-
 
 VIEWPORTS = {
     "desktop": (1440, 900),
@@ -28,6 +20,17 @@ def normalize_target(target: str) -> str:
         return target
     path = pathlib.Path(target).expanduser().resolve()
     return path.as_uri()
+
+
+def load_sync_playwright():
+    try:
+        from playwright.sync_api import sync_playwright
+    except ModuleNotFoundError:
+        pw_python = shutil.which("pw-python")
+        if pw_python and pathlib.Path(sys.executable).name != "pw-python":
+            os.execvp(pw_python, [pw_python, *sys.argv])
+        raise
+    return sync_playwright
 
 
 def main() -> int:
@@ -47,6 +50,7 @@ def main() -> int:
     out_dir = pathlib.Path(args.out).expanduser().resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     target = normalize_target(args.target)
+    sync_playwright = load_sync_playwright()
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, executable_path=args.chromium)

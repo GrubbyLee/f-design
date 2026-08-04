@@ -5,10 +5,11 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_SRC="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 SRC="${F_DESIGN_SRC:-$DEFAULT_SRC}"
 SRC_REAL="$(realpath "$SRC")"
+TARGET_HOME="${F_DESIGN_TARGET_HOME:-$HOME}"
 TARGETS=(
-  "${HOME}/.claude/skills/f-design"
-  "${HOME}/.cursor/skills/f-design"
-  "${HOME}/.qwen/skills/f-design"
+  "${TARGET_HOME}/.claude/skills/f-design"
+  "${TARGET_HOME}/.cursor/skills/f-design"
+  "${TARGET_HOME}/.qwen/skills/f-design"
 )
 
 if [[ ! -f "$SRC_REAL/SKILL.md" ]]; then
@@ -36,7 +37,10 @@ for target in "${TARGETS[@]}"; do
 
   mkdir -p "$(dirname "$target")"
   mkdir -p "$target"
-  rsync -a --delete \
+  rsync -a --delete --delete-excluded \
+    --exclude='.git/' \
+    --exclude='.codex/' \
+    --exclude='.f-design/profile.md' \
     --exclude='__pycache__/' \
     --exclude='*.pyc' \
     --exclude='.DS_Store' \

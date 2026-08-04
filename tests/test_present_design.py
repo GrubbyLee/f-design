@@ -59,11 +59,28 @@ class PresentDesignIntegrationTest(unittest.TestCase):
 
     def test_auto_browser_skips_remote_environment(self) -> None:
         env = os.environ.copy()
+        for marker in (
+            "CI",
+            "CODESPACES",
+            "REMOTE_CONTAINERS",
+            "SSH_CLIENT",
+            "SSH_CONNECTION",
+            "SSH_TTY",
+        ):
+            env.pop(marker, None)
         env["SSH_CONNECTION"] = "127.0.0.1 1 127.0.0.1 2"
         result = self.run_script("open", str(self.first), env=env)
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("remote/headless marker SSH_CONNECTION is set", result.stdout)
+
+    def test_auto_browser_recognizes_ci_environment(self) -> None:
+        env = os.environ.copy()
+        env["CI"] = "true"
+        result = self.run_script("open", str(self.first), env=env)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("remote/headless marker CI is set", result.stdout)
 
     def test_managed_server_serves_multiple_files_and_stops(self) -> None:
         start = self.run_script(
