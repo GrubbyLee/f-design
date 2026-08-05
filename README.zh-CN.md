@@ -31,6 +31,7 @@
 - 在共享本机桌面自动打开独立 HTML；需要 HTTP 时管理后台评审服务；远程环境使用宿主可访问链接或截图。
 - 在明确的确认门暂停，让用户在高成本实现前确认、选择方向或提出修改。
 - 能分流后台、管理端、工具界面、落地页、重设计、截图还原、移动端、动效、3D、UI 审查等任务。
+- 能按类型评估已有产品/页面设计，识别模板化 AI 设计痕迹，给出优缺点评分、证据、取舍、按优先级排列的可落地优化方案、验收标准和验证步骤。
 - 在较大实现前盘点框架、路由、组件、Token、数据契约、测试工具与项目风险。
 - 将已确认设计转成机器可校验的契约，覆盖流程、状态、断点、可访问性、性能预算、数据 Schema、视觉基线和确认凭证。
 - 使用 Playwright 在各响应式断点验证交互，并检查控制台、溢出、axe 可访问性、截图差异、浏览器指标和可选 Lighthouse 门槛。
@@ -97,11 +98,15 @@ f-design is ready. Pick a frontend task:
    Primary: f-design
    Helpers if available: design-taste-frontend, web-design-guidelines
 
-3. Add complex animation
+3. Evaluate an existing product/page design / 评估已有产品或页面设计
+   Primary: f-design
+   Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
+
+4. Add complex animation
    Primary: f-design
    Helpers if available: gsap, animejs
 
-4. Build 3D / WebGL
+5. Build 3D / WebGL
    Primary: f-design
    Helpers if available: three
 ```
@@ -114,7 +119,17 @@ f-design is ready. Pick a frontend task:
 使用 f-design 帮我做一个用于审核生成媒体的创作者后台。
 ```
 
-agent 应该按这个流程推进：
+也可以要求它评估已有产品设计：
+
+```text
+使用 f-design 评估这个已有仪表盘设计，并给出按优先级排列的改良报告。
+输入：<URL/截图/HTML/仓库路径>
+输出：评分表、优点、问题、可执行改动、验收标准。
+```
+
+评估流程会区分营销页、产品工作台、数据仪表盘、表单流程、移动端、重设计审计、可访问性审计和竞品对照，避免用落地页审美规则误判高密度产品 UI。
+
+Agent 应该按这个流程推进：
 
 1. 盘点项目并读取产品上下文。
 2. 选择 Level 0、1 或 2 的设计深度。
@@ -231,6 +246,7 @@ bash scripts/sync-aide.sh
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── anti-ai-design-tells.md
 │   ├── artifact-presentation.md
 │   ├── design-contract.schema.json
 │   ├── design-defaults.md
@@ -241,6 +257,7 @@ bash scripts/sync-aide.sh
 │   ├── local-overrides.example.md
 │   ├── project-intelligence.md
 │   ├── project-profile.example.md
+│   ├── product-design-review.md
 │   ├── quality-gates.md
 │   ├── state-and-data.md
 │   └── review-rubric.md
@@ -256,6 +273,7 @@ bash scripts/sync-aide.sh
 │   └── visual-diff.py
 └── tests/
     ├── fixtures/quality/
+    ├── test_documentation_contract.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
     └── test_support_scripts.py

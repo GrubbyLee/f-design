@@ -19,6 +19,7 @@ Read only the references required by the task:
 - Stack-specific implementation decisions: matching section of `references/framework-adapters.md`.
 - Substantial implementation verification: `references/quality-gates.md`.
 - UI/UX review request: `references/review-rubric.md`.
+- Existing product/page design evaluation, pros/cons critique, or actionable improvement report: `references/product-design-review.md`, `references/review-rubric.md`, and `references/anti-ai-design-tells.md` when visual quality or generic AI-looking UI is in scope.
 
 ## Context Files
 
@@ -57,11 +58,15 @@ f-design is ready. Pick a frontend task:
    Primary: f-design
    Helpers if available: design-taste-frontend, web-design-guidelines
 
-3. Add complex animation
+3. Evaluate an existing product/page design
+   Primary: f-design
+   Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
+
+4. Add complex animation
    Primary: f-design
    Helpers if available: gsap, animejs
 
-4. Build 3D / WebGL
+5. Build 3D / WebGL
    Primary: f-design
    Helpers if available: three
 ```
@@ -86,7 +91,9 @@ Route the user's wording before selecting tools:
 - "landing page/site/homepage" -> brand or landing workflow; verify product/brand facts when current or specific.
 - "animation/motion/transition" -> motion workflow; pick CSS/WAAPI/GSAP/Anime based on complexity and existing dependencies.
 - "mobile/miniprogram/responsive" -> mobile-first workflow; audit narrow widths before desktop polish.
-- "review/audit/check UX" -> review workflow; read `references/review-rubric.md`.
+- "review/audit/check UX/evaluate existing design/pros and cons/actionable improvements" -> product design review workflow; read `references/product-design-review.md` and `references/review-rubric.md`; also read `references/anti-ai-design-tells.md` when visual quality, redesign, landing pages, dashboards, or generic AI-looking UI is in scope.
+
+For existing product design reviews, diagnose first: classify the review mode, define product context, inspect the artifact, score strengths and weaknesses, then return prioritized, evidence-backed recommendations with implementation hints, tradeoffs, acceptance criteria, and verification steps. Do not redesign or implement unless the user asks for it or approves a proposed direction.
 
 ## AIDE Compatibility
 

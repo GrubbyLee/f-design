@@ -31,6 +31,7 @@ Use it when you want fewer generic AI-looking interfaces and a more disciplined 
 - Automatically opens standalone HTML on a shared local desktop, manages HTTP review servers when needed, and uses host-accessible links or screenshots in remote environments.
 - Pauses at explicit confirmation gates so the user can approve, choose a direction, or request changes before expensive implementation.
 - Routes tasks such as dashboards, admin panels, landing pages, redesigns, screenshot-to-code work, mobile UI, animation, 3D, and UI reviews.
+- Evaluates existing product/page designs by mode, scores strengths and weaknesses, flags generic AI-design tells, and outputs prioritized, actionable improvement plans with evidence, tradeoffs, acceptance criteria, and verification steps.
 - Inventories frameworks, routes, components, tokens, data contracts, test tools, and project risks before substantial implementation.
 - Turns approved designs into machine-validated contracts covering flows, states, breakpoints, accessibility, performance budgets, data schemas, visual baselines, and approval evidence.
 - Verifies declared interactions at responsive breakpoints with Playwright, console and overflow checks, axe accessibility audits, screenshot comparison, browser metrics, and optional Lighthouse gates.
@@ -97,11 +98,15 @@ f-design is ready. Pick a frontend task:
    Primary: f-design
    Helpers if available: design-taste-frontend, web-design-guidelines
 
-3. Add complex animation
+3. Evaluate an existing product/page design
+   Primary: f-design
+   Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
+
+4. Add complex animation
    Primary: f-design
    Helpers if available: gsap, animejs
 
-4. Build 3D / WebGL
+5. Build 3D / WebGL
    Primary: f-design
    Helpers if available: three
 ```
@@ -114,7 +119,17 @@ When you provide a real task:
 Use f-design to build a creator dashboard for reviewing generated media.
 ```
 
-the agent should follow this loop:
+You can also ask for a product design review:
+
+```text
+Use f-design to evaluate this existing dashboard design and provide a prioritized improvement report.
+Input: <URL/screenshot/HTML/repo path>
+Output: scorecard, strengths, issues, actionable changes, acceptance criteria.
+```
+
+The review workflow separates marketing pages, product workbenches, data dashboards, forms, mobile surfaces, redesign audits, accessibility audits, and competitive comparisons so dense product UI is not judged with landing-page rules.
+
+The agent should follow this loop:
 
 1. Inventory the project and read product context.
 2. Choose Level 0, 1, or 2 design depth.
@@ -231,6 +246,7 @@ bash scripts/sync-aide.sh
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── anti-ai-design-tells.md
 │   ├── artifact-presentation.md
 │   ├── design-contract.schema.json
 │   ├── design-defaults.md
@@ -241,6 +257,7 @@ bash scripts/sync-aide.sh
 │   ├── local-overrides.example.md
 │   ├── project-intelligence.md
 │   ├── project-profile.example.md
+│   ├── product-design-review.md
 │   ├── quality-gates.md
 │   ├── state-and-data.md
 │   └── review-rubric.md
@@ -256,6 +273,7 @@ bash scripts/sync-aide.sh
 │   └── visual-diff.py
 └── tests/
     ├── fixtures/quality/
+    ├── test_documentation_contract.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
     └── test_support_scripts.py
