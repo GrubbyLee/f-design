@@ -16,6 +16,63 @@ Accept any useful combination of:
 
 If context is missing, infer what is safe from the artifact and state assumptions. Ask only when the missing context would materially change the evaluation, such as whether the page is an operational tool or a marketing page.
 
+## Scope Gate
+
+Before running a product design review, confirm the explicit scope requested by the user. Do not default to a full audit.
+
+State one line at the start of your response:
+
+```text
+Review scope: <what the user explicitly asked for>
+Not included by default: <items not mentioned by the user, e.g. mobile audit, implementation, redesign, social media use>
+```
+
+### When to pause and confirm
+
+Pause before expanding scope when any of these is true:
+
+- The user only says "evaluate this URL / screenshot / page" without naming the review target.
+- The user did not mention mobile / responsive, but you are about to include mobile findings.
+- The user did not mention accessibility, but you are about to run an accessibility audit.
+- The user did not ask for redesign or implementation, but you are about to propose one.
+- The user did not mention downstream goals (blog post, social media, case study, pitch deck, etc.), but you are about to tailor the output for them.
+
+If any of these is true, confirm the expanded scope with the user first.
+
+### Default safe scope
+
+When the user gives a single URL or screenshot and says only "evaluate this", default to:
+
+- Primary viewport: desktop only, unless the artifact is clearly a mobile screen.
+- Review target: single page, visual hierarchy, task flow basics, craft, and obvious usability issues.
+- Output: scorecard, strengths, top issues, and prioritized actionable improvements.
+- Excluded by default: mobile audit, tablet audit, full accessibility audit, redesign, implementation, and any downstream publishing goal.
+
+### Mobile / responsive review trigger conditions
+
+Include mobile or responsive review only when at least one of these is true:
+
+- The user explicitly asks for mobile, responsive, tablet, or narrow-screen evaluation.
+- The product is clearly a mobile-first or mobile-heavy surface (app, webview, miniprogram, mobile site).
+- The provided artifact itself is a mobile screenshot or mobile frame.
+- The task or workflow being evaluated is primarily used on mobile devices.
+- The user has previously confirmed mobile as in scope for this specific review.
+
+When mobile is not in scope, do not list mobile-only findings as P0 or P1 issues. You may note them as a single out-of-scope observation.
+
+### No inherited side goals
+
+Do not carry unrelated goals from earlier conversation history into the current review unless the user explicitly re-states them for this task.
+
+Examples of side goals that must not be inherited by default:
+
+- Publishing a blog post, WeChat article, social media post, or video.
+- Preparing a pitch deck, case study, or marketing asset.
+- Implementing the improvements, building a redesign, or shipping code.
+- Syncing to another tool, repository, or AIDE environment.
+
+If you are unsure whether a historical goal still applies, treat it as out of scope.
+
 ## Review Mode Routing
 
 First classify the artifact. Use one primary mode and optional secondary modes:
@@ -47,7 +104,7 @@ Evidence:
 - confidence: <high / medium / low>
 ```
 
-When reviewing live or local pages, capture or request desktop, tablet, and mobile evidence where possible. If evidence is incomplete, label the missing verification step instead of overstating certainty.
+When reviewing live or local pages, capture evidence only for viewports in scope. If mobile or tablet is in scope, capture those too; otherwise start with desktop. If evidence is incomplete, label the missing verification step instead of overstating certainty.
 
 ## Product UI Deep Audit
 

@@ -115,5 +115,40 @@ class ProductDesignReviewDocumentationTest(unittest.TestCase):
         self.assertIn("Marketing page", rubric)
 
 
+
+    def test_product_design_review_has_scope_gate_and_default_safe_scope(self) -> None:
+        content = read("references/product-design-review.md")
+
+        self.assertIn("Scope Gate", content)
+        self.assertIn("Review scope:", content)
+        self.assertIn("Not included by default:", content)
+        self.assertIn("Default safe scope", content)
+        self.assertIn("mobile audit", content)
+        self.assertIn("single page", content)
+
+    def test_product_design_review_defines_mobile_trigger_conditions(self) -> None:
+        content = read("references/product-design-review.md")
+
+        self.assertIn("Mobile / responsive review trigger conditions", content)
+        self.assertIn("When mobile is not in scope", content)
+        self.assertIn("do not list mobile-only findings as P0 or P1", content)
+
+    def test_product_design_review_forbids_inherited_side_goals(self) -> None:
+        content = read("references/product-design-review.md")
+
+        self.assertIn("No inherited side goals", content)
+        self.assertIn("downstream publishing goal", content)
+        self.assertIn("treat it as out of scope", content)
+
+    def test_skill_requires_scope_gate_before_product_design_review(self) -> None:
+        skill = read("SKILL.md")
+
+        self.assertIn("scope gate", skill)
+        self.assertIn("state the explicit scope", skill)
+        self.assertIn("not included by default", skill)
+        self.assertIn("Confirm expanded scope", skill)
+        self.assertIn("downstream publishing goals", skill)
+
+
 if __name__ == "__main__":
     unittest.main()

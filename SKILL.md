@@ -93,7 +93,7 @@ Route the user's wording before selecting tools:
 - "mobile/miniprogram/responsive" -> mobile-first workflow; audit narrow widths before desktop polish.
 - "review/audit/check UX/evaluate existing design/pros and cons/actionable improvements" -> product design review workflow; read `references/product-design-review.md` and `references/review-rubric.md`; also read `references/anti-ai-design-tells.md` when visual quality, redesign, landing pages, dashboards, or generic AI-looking UI is in scope.
 
-For existing product design reviews, diagnose first: classify the review mode, define product context, inspect the artifact, score strengths and weaknesses, then return prioritized, evidence-backed recommendations with implementation hints, tradeoffs, acceptance criteria, and verification steps. Do not redesign or implement unless the user asks for it or approves a proposed direction.
+For existing product design reviews, start with a scope gate: state the explicit scope requested by the user and what is not included by default. Confirm expanded scope with the user before adding mobile/responsive, accessibility audits, redesigns, implementations, or downstream publishing goals. Then diagnose: classify the review mode, define product context, inspect the artifact, score strengths and weaknesses, and return prioritized, evidence-backed recommendations with implementation hints, tradeoffs, acceptance criteria, and verification steps. Do not redesign or implement unless the user asks for it or approves a proposed direction.
 
 ## AIDE Compatibility
 
