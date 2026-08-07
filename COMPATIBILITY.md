@@ -2,7 +2,7 @@
 
 Compatibility claims are reported at three separate levels:
 
-| AIDE | Installed | Synchronized to v0.1.0 | Provider-backed invocation | Evidence date |
+| AIDE | Installed | Synchronized to v0.1.1 | Provider-backed invocation | Evidence date |
 |---|:---:|:---:|---|---|
 | Codex 0.137.0 | Yes | Yes | Passed: returned `F_DESIGN_SMOKE version=0.1.0` | 2026-08-07 |
 | Claude Code 2.1.212 | Yes | Yes | Passed: returned `F_DESIGN_SMOKE version=0.1.0` | 2026-08-07 |

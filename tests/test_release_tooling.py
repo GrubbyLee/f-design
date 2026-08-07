@@ -15,6 +15,10 @@ JOURNEYS = ROOT / "scripts" / "verify-product-journeys.py"
 SMOKE = ROOT / "scripts" / "smoke-aides.py"
 
 
+def fake_openai_key() -> str:
+    return "sk" + "-" + "abcdefghijklmnopqrstuvwxyz123456"
+
+
 def load_module(name: str, path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
@@ -42,7 +46,7 @@ class SecretScanTest(unittest.TestCase):
         rule = module.RULES["OpenAI-style API key"]
         self.assertIsNone(rule.search("task-based review workflow"))
         self.assertIsNone(rule.search("sk-short-placeholder"))
-        self.assertIsNotNone(rule.search("sk-abcdefghijklmnopqrstuvwxyz123456"))
+        self.assertIsNotNone(rule.search(fake_openai_key()))
 
     def test_candidate_files_include_untracked_nonignored_files(self) -> None:
         module = load_module("check_secrets_candidates", SECRET_SCAN)
@@ -55,6 +59,23 @@ class SecretScanTest(unittest.TestCase):
             candidates = {path.name for path in module.candidate_files(root)}
         self.assertIn("untracked.txt", candidates)
         self.assertNotIn("ignored.txt", candidates)
+
+    def test_scan_does_not_skip_credentials_in_readme(self) -> None:
+        module = load_module("check_secrets_readme", SECRET_SCAN)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            (root / "README.md").write_text(fake_openai_key() + "\n", encoding="utf-8")
+            findings = module.scan(root)
+        self.assertTrue(any("OpenAI-style API key" in finding for finding in findings))
+
+    def test_scan_works_without_git_metadata(self) -> None:
+        module = load_module("check_secrets_non_git", SECRET_SCAN)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            (root / "README.md").write_text(fake_openai_key() + "\n", encoding="utf-8")
+            findings = module.scan(root)
+        self.assertTrue(any("OpenAI-style API key" in finding for finding in findings))
 
 
 class DoctorTest(unittest.TestCase):
@@ -88,6 +109,16 @@ class DoctorTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_doctor_rejects_version_file_manifest_drift(self) -> None:
+        module = load_module("f_design_doctor_version", DOCTOR)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = pathlib.Path(temp_dir) / "source"
+            shutil.copytree(ROOT, source, ignore=shutil.ignore_patterns(".git", ".codex", "__pycache__", "*.pyc"))
+            (source / "VERSION").write_text("9.9.9\n", encoding="utf-8")
+            data = module.report(source, pathlib.Path(temp_dir) / "targets")
+        self.assertFalse(data["versionConsistent"])
+        self.assertFalse(data["healthy"])
+
 
 class JourneyContractTest(unittest.TestCase):
     def test_three_journeys_and_automation_are_documented(self) -> None:
@@ -112,6 +143,16 @@ class JourneyContractTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 2)
         self.assertIn("yes-consume-provider-quota", result.stderr)
+
+
+class WorkflowRegressionTest(unittest.TestCase):
+    def test_gitee_tag_sync_never_updates_main(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "sync-to-gitee.yml").read_text(encoding="utf-8")
+        self.assertIn('if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "main" ]]', workflow)
+        self.assertIn("git push gitee HEAD:refs/heads/main --force", workflow)
+        self.assertIn("refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}", workflow)
+        tag_section = workflow.split('elif [[ "$GITHUB_REF_TYPE" == "tag" ]]', 1)[1]
+        self.assertNotIn("refs/heads/main", tag_section.split("else", 1)[0])
 
 
 if __name__ == "__main__":

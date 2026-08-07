@@ -47,6 +47,17 @@ def load_manifest(root: pathlib.Path) -> dict:
     return data
 
 
+def load_version_file(root: pathlib.Path) -> str:
+    path = root / "VERSION"
+    try:
+        version = path.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        raise ValueError(f"unable to read {path}: {exc}") from exc
+    if not version:
+        raise ValueError(f"empty version file: {path}")
+    return version
+
+
 def included_files(root: pathlib.Path) -> list[pathlib.Path]:
     result: list[pathlib.Path] = []
     if not root.exists():
@@ -101,6 +112,8 @@ def inspect_target(aide: str, target: pathlib.Path, source_digest: str, required
 
 def report(source: pathlib.Path, target_home: pathlib.Path) -> dict:
     manifest = load_manifest(source)
+    version_file = load_version_file(source)
+    version_consistent = version_file == manifest["version"]
     source_digest = tree_digest(source)
     if source_digest is None:
         raise ValueError(f"source has no public files: {source}")
@@ -115,19 +128,22 @@ def report(source: pathlib.Path, target_home: pathlib.Path) -> dict:
     return {
         "name": manifest["name"],
         "version": manifest["version"],
+        "versionFile": version_file,
+        "versionConsistent": version_consistent,
         "source": str(source),
         "sourceDigest": source_digest,
         "missingSourceRequired": missing_source,
         "python": platform.python_version(),
         "commands": {aide: shutil.which(aide) for aide in AIDE_PATHS},
         "targets": [asdict(item) for item in targets],
-        "healthy": not missing_source and all(item.installed and item.synchronized for item in targets),
+        "healthy": version_consistent and not missing_source and all(item.installed and item.synchronized for item in targets),
     }
 
 
 def print_human(data: dict) -> None:
     print(f"f-design {data['version']}")
     print(f"Source: {data['source']}")
+    print(f"Version file: {data['versionFile']} ({'consistent' if data['versionConsistent'] else 'MISMATCH'})")
     print(f"Public digest: {data['sourceDigest'][:12]}")
     if data["missingSourceRequired"]:
         print("Source manifest: FAIL")

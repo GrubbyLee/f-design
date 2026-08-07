@@ -17,6 +17,15 @@ PROMPT = (
 )
 
 
+def release_version(root: pathlib.Path) -> str:
+    manifest = json.loads((root / "f-design.json").read_text(encoding="utf-8"))
+    manifest_version = manifest.get("version") if isinstance(manifest, dict) else None
+    version_file = (root / "VERSION").read_text(encoding="utf-8").strip()
+    if not isinstance(manifest_version, str) or not version_file or manifest_version != version_file:
+        raise ValueError("VERSION and f-design.json version must match before provider smoke tests")
+    return manifest_version
+
+
 def commands(workspace: pathlib.Path) -> dict[str, list[str]]:
     return {
         "codex": [
@@ -78,7 +87,11 @@ def main() -> int:
         print("Refusing provider calls without --yes-consume-provider-quota", file=sys.stderr)
         return 2
     root = pathlib.Path(__file__).resolve().parents[1]
-    version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    try:
+        version = release_version(root)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        print(f"Release version check failed: {exc}", file=sys.stderr)
+        return 2
     workspace = pathlib.Path(args.workspace).resolve()
     available = commands(workspace)
     results = [run_smoke(aide, available[aide], workspace, version, args.timeout) for aide in args.aide]

@@ -2,6 +2,15 @@
 
 All notable changes to `f-design` are documented here. The project follows Semantic Versioning from `v0.1.0` onward.
 
+## [0.1.1] - 2026-08-07
+
+### Fixed
+
+- Gitee tag synchronization no longer force-updates the mirror's `main` branch.
+- Secret scanning checks README, workflow, and test files instead of skipping whole files, and works from non-Git source directories.
+- `f-design-doctor.py` rejects drift between `VERSION` and `f-design.json`.
+- Provider smoke tests refuse to run when release version sources disagree.
+
 ## [0.1.0] - 2026-08-07
 
 ### Added

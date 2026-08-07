@@ -19,7 +19,7 @@ English | [简体中文](README.zh-CN.md)
 
 `f-design` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
 
-Current version: **v0.1.0**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence.
+Current version: **v0.1.1**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence.
 
 Use it when you want fewer generic AI-looking interfaces and a more disciplined frontend design/development loop.
 
