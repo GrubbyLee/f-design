@@ -48,26 +48,23 @@ jobs:
           python3 scripts/run-preview.py --help >/dev/null
           python3 scripts/visual-diff.py --help >/dev/null
           python3 scripts/verify-ui.py --help >/dev/null
+          python3 scripts/f-design-doctor.py --help >/dev/null
+          python3 scripts/evaluate-review-output.py --help >/dev/null
           python3 scripts/design-contract.py validate \
             tests/fixtures/quality/design-contract.json \
             --project-root . \
             --require-approved
           python3 -m unittest discover -s tests -v
 
+      - name: Verify product journeys
+        run: python3 scripts/verify-product-journeys.py
+
       - name: Run environment detector
         run: |
           bash scripts/detect-frontend-env.sh .
 
       - name: Check for local path leakage
-        run: |
-          if grep -RInE '/home/Arabica|gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]+' . \
-            --exclude-dir=.git \
-            --exclude='validate.yml' \
-            --exclude='README.md' \
-            --exclude='README.zh-CN.md'; then
-            echo "::error::Found local path or token-looking string"
-            exit 1
-          fi
+        run: python3 scripts/check-secrets.py .
 
   browser-quality:
     runs-on: ubuntu-latest

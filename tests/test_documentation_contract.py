@@ -149,6 +149,36 @@ class ProductDesignReviewDocumentationTest(unittest.TestCase):
         self.assertIn("Confirm expanded scope", skill)
         self.assertIn("downstream publishing goals", skill)
 
+    def test_specialized_review_templates_are_routed_and_actionable(self) -> None:
+        skill = read("SKILL.md")
+        review = read("references/product-design-review.md")
+        templates = {
+            "data-tables.md": "Selected count and scope",
+            "dashboards.md": "Empty data is not rendered as a valid zero",
+            "complex-forms.md": "First invalid field receives focus",
+            "mobile-navigation.md": "System/browser back",
+            "high-risk-batch-actions.md": "A retry is idempotent",
+        }
+        for name, acceptance in templates.items():
+            path = ROOT / "references" / "review-templates" / name
+            self.assertTrue(path.is_file(), name)
+            content = path.read_text(encoding="utf-8")
+            self.assertIn("Evidence Checklist", content)
+            self.assertIn("High-Risk Findings", content)
+            self.assertIn("Acceptance Examples", content)
+            self.assertIn(acceptance, content)
+            self.assertIn(name, skill)
+            self.assertIn(name, review)
+
+    def test_readmes_document_version_doctor_and_product_journeys(self) -> None:
+        for name in ("README.md", "README.zh-CN.md"):
+            content = read(name)
+            self.assertIn("f-design-doctor.py --strict", content)
+            self.assertIn("verify-product-journeys.py", content)
+            self.assertIn("evaluate-review-output.py", content)
+            self.assertIn("CHANGELOG.md", content)
+            self.assertIn("UPGRADING.md", content)
+
 
 if __name__ == "__main__":
     unittest.main()

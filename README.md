@@ -12,11 +12,14 @@ English | [简体中文](README.zh-CN.md)
 
 [![Validate](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml)
 [![Sync to Gitee](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml)
+[![Release](https://img.shields.io/github/v/release/GrubbyLee/f-design)](https://github.com/GrubbyLee/f-design/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > A frontend design orchestration skill for Codex, Claude Code, Cursor, Qwen Code, and other AI development environments.
 
 `f-design` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
+
+Current version: **v0.1.0**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence.
 
 Use it when you want fewer generic AI-looking interfaces and a more disciplined frontend design/development loop.
 
@@ -39,6 +42,7 @@ Use it when you want fewer generic AI-looking interfaces and a more disciplined 
 - Starts real development servers as managed previews with health checks, browser opening, logs, status, and safe cleanup.
 - Uses project/local preference files without hard-coding personal taste into the public skill.
 - Provides deterministic scripts for project inspection, artifact presentation, contract validation, application previews, interaction QA, visual diffs, screenshot capture, and cross-AIDE syncing.
+- Ships behavior regression fixtures, three product-journey acceptance checks, specialized operational-UI review templates, and digest-based cross-AIDE version diagnosis.
 
 ## Quick Start
 
@@ -52,6 +56,7 @@ Synchronize the same skill across Codex, Claude Code, Cursor, and Qwen Code loca
 
 ```bash
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
+python3 ~/.codex/skills/f-design/scripts/f-design-doctor.py --strict
 ```
 
 The target `f-design` directories are managed mirrors: stale files are removed, while `.git`, `.codex`, generated Python caches, and private `.f-design/profile.md` files are excluded.
@@ -128,6 +133,8 @@ Output: scorecard, strengths, issues, actionable changes, acceptance criteria.
 ```
 
 The review workflow separates marketing pages, product workbenches, data dashboards, forms, mobile surfaces, redesign audits, accessibility audits, and competitive comparisons so dense product UI is not judged with landing-page rules.
+
+Specialized templates add deeper evidence and acceptance criteria for data tables, dashboards, complex forms, mobile navigation, and high-risk batch actions. Mobile templates are loaded only when mobile is explicitly in scope or the artifact is mobile-first.
 
 The agent should follow this loop:
 
@@ -237,11 +244,43 @@ Sync local AIDE copies:
 bash scripts/sync-aide.sh
 ```
 
+Check versions and public-file digests across all supported AIDEs:
+
+```bash
+python3 scripts/f-design-doctor.py --strict
+```
+
+Run an explicit provider-backed invocation smoke test (may consume model quota):
+
+```bash
+python3 scripts/smoke-aides.py --aide codex --yes-consume-provider-quota
+```
+
+Run the deterministic design-approval, review-isolation, and cross-AIDE product journeys:
+
+```bash
+python3 scripts/verify-product-journeys.py
+```
+
+Evaluate a captured agent review against a scope contract:
+
+```bash
+python3 scripts/evaluate-review-output.py \
+  tests/fixtures/review-behavior/image-review-isolated.json \
+  response.md
+```
+
 ## Repository Layout
 
 ```text
 .
 ├── SKILL.md
+├── VERSION
+├── f-design.json
+├── CHANGELOG.md
+├── COMPATIBILITY.md
+├── RELEASE_NOTES.md
+├── UPGRADING.md
 ├── agents/
 │   └── openai.yaml
 ├── references/
@@ -258,24 +297,34 @@ bash scripts/sync-aide.sh
 │   ├── project-intelligence.md
 │   ├── project-profile.example.md
 │   ├── product-design-review.md
+│   ├── end-to-end-journeys.md
+│   ├── review-templates/
 │   ├── quality-gates.md
 │   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
 │   ├── capture-audit.py
 │   ├── design-contract.py
+│   ├── check-secrets.py
+│   ├── evaluate-review-output.py
+│   ├── f-design-doctor.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
 │   ├── inspect-project.py
 │   ├── run-preview.py
+│   ├── smoke-aides.py
 │   ├── sync-aide.sh
 │   ├── verify-ui.py
+│   ├── verify-product-journeys.py
 │   └── visual-diff.py
 └── tests/
     ├── fixtures/quality/
+    ├── fixtures/review-behavior/
+    ├── test_behavior_evaluations.py
     ├── test_documentation_contract.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
+    ├── test_release_tooling.py
     └── test_support_scripts.py
 ```
 
@@ -290,10 +339,16 @@ python3 scripts/present-design.py --help >/dev/null
 python3 scripts/capture-audit.py --help >/dev/null
 python3 scripts/design-contract.py validate tests/fixtures/quality/design-contract.json --project-root . --require-approved
 python3 -m unittest discover -s tests -v
+python3 scripts/verify-product-journeys.py
+python3 scripts/check-secrets.py .
 bash scripts/detect-frontend-env.sh .
 ```
 
 The GitHub `validate.yml` workflow also runs a strict browser-quality job against the fixture contract with Playwright Chromium, axe-core, responsive state/keyboard flows, screenshots, and Lighthouse. Verification reports and screenshots are uploaded as workflow artifacts.
+
+## Versioning And Releases
+
+The current release is declared in `VERSION` and `f-design.json`. See `CHANGELOG.md` for changes, `RELEASE_NOTES.md` for the current release summary, and `UPGRADING.md` for safe upgrade instructions. Provider-side AIDE invocation remains an explicit, separately reported check because it can consume external model quota.
 
 ## Gitee Mirror
 

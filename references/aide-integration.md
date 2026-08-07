@@ -61,6 +61,32 @@ F_DESIGN_TARGET_HOME=/path/to/sandbox \
 
 The source can be overridden independently with `F_DESIGN_SRC`.
 
+The sync command ends with a strict doctor check. A successful copy is not reported as synchronized until every public-file digest matches the source.
+
+## Version And Upgrade Diagnosis
+
+Check the repository version and every local AIDE mirror:
+
+```bash
+python3 scripts/f-design-doctor.py --strict
+```
+
+Machine-readable output:
+
+```bash
+python3 scripts/f-design-doctor.py --strict --json
+```
+
+Upgrade a Git clone source, verify it, and synchronize the local mirrors:
+
+```bash
+git -C ~/.codex/skills/f-design pull --ff-only
+python3 ~/.codex/skills/f-design/scripts/f-design-doctor.py
+bash ~/.codex/skills/f-design/scripts/sync-aide.sh
+```
+
+If the active source is another checkout, set `F_DESIGN_SRC` explicitly before syncing. Restart or reload each AIDE after an upgrade when it caches skill discovery.
+
 ## Compatibility Verification
 
 Use three levels of evidence and report them separately:

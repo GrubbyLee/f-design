@@ -12,11 +12,14 @@
 
 [![Validate](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml)
 [![Sync to Gitee](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml)
+[![Release](https://img.shields.io/github/v/release/GrubbyLee/f-design)](https://github.com/GrubbyLee/f-design/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > 面向 Codex、Claude Code、Cursor、Qwen Code 及其他 AI 开发环境的前端设计总控 skill。
 
 `f-design` 不是又一个 UI 风格预设，而是一个前端设计与生产工程总控 skill：它帮助 AI 编程助手理解仓库、判断并呈现设计方向、锁定可执行契约、完成实现，并在交付前验证行为与质量。
+
+当前版本：**v0.1.0**。不同环境的“已安装、已同步、模型实际调用”证据分开记录在 [AIDE 兼容性报告](COMPATIBILITY.md) 中。
 
 它的目标是减少模板化、AI 味明显的前端界面，让前端设计和开发形成稳定闭环。
 
@@ -39,6 +42,7 @@
 - 以受管理方式启动真实开发服务器，支持健康检查、自动开浏览器、日志、状态查询和安全清理。
 - 支持项目级和本机级偏好文件，不把个人偏好写死进开源 skill。
 - 内置项目扫描、设计稿呈现、契约校验、应用预览、交互 QA、视觉差异、截图和跨 AIDE 同步脚本。
+- 内置行为回归样例、三条产品旅程验收、运营型 UI 专项评审模板，以及基于文件摘要的跨 AIDE 版本诊断。
 
 ## 快速开始
 
@@ -52,6 +56,7 @@ git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
 
 ```bash
 bash ~/.codex/skills/f-design/scripts/sync-aide.sh
+python3 ~/.codex/skills/f-design/scripts/f-design-doctor.py --strict
 ```
 
 目标 `f-design` 目录按受管理镜像处理：同步会删除过期文件，同时排除 `.git`、`.codex`、Python 缓存和私有 `.f-design/profile.md`。
@@ -128,6 +133,8 @@ f-design is ready. Pick a frontend task:
 ```
 
 评估流程会区分营销页、产品工作台、数据仪表盘、表单流程、移动端、重设计审计、可访问性审计和竞品对照，避免用落地页审美规则误判高密度产品 UI。
+
+数据表、仪表盘、复杂表单、移动导航和高风险批量操作还有独立专项模板，用于补充证据要求与验收标准。只有移动端被明确纳入范围或产物本身是移动优先时，才加载移动模板。
 
 Agent 应该按这个流程推进：
 
@@ -237,11 +244,43 @@ python3 scripts/present-design.py stop
 bash scripts/sync-aide.sh
 ```
 
+检查四个 AIDE 的版本、必需文件和公开文件摘要：
+
+```bash
+python3 scripts/f-design-doctor.py --strict
+```
+
+显式运行真实模型调用冒烟测试（可能消耗模型额度）：
+
+```bash
+python3 scripts/smoke-aides.py --aide codex --yes-consume-provider-quota
+```
+
+运行设计确认、评估隔离和跨 AIDE 三条确定性产品旅程：
+
+```bash
+python3 scripts/verify-product-journeys.py
+```
+
+根据 Scope Gate 契约评估一次真实 agent 输出：
+
+```bash
+python3 scripts/evaluate-review-output.py \
+  tests/fixtures/review-behavior/image-review-isolated.json \
+  response.md
+```
+
 ## 仓库结构
 
 ```text
 .
 ├── SKILL.md
+├── VERSION
+├── f-design.json
+├── CHANGELOG.md
+├── COMPATIBILITY.md
+├── RELEASE_NOTES.md
+├── UPGRADING.md
 ├── agents/
 │   └── openai.yaml
 ├── references/
@@ -258,24 +297,34 @@ bash scripts/sync-aide.sh
 │   ├── project-intelligence.md
 │   ├── project-profile.example.md
 │   ├── product-design-review.md
+│   ├── end-to-end-journeys.md
+│   ├── review-templates/
 │   ├── quality-gates.md
 │   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
 │   ├── capture-audit.py
+│   ├── check-secrets.py
 │   ├── design-contract.py
+│   ├── evaluate-review-output.py
+│   ├── f-design-doctor.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
 │   ├── inspect-project.py
 │   ├── run-preview.py
+│   ├── smoke-aides.py
 │   ├── sync-aide.sh
 │   ├── verify-ui.py
+│   ├── verify-product-journeys.py
 │   └── visual-diff.py
 └── tests/
     ├── fixtures/quality/
+    ├── fixtures/review-behavior/
+    ├── test_behavior_evaluations.py
     ├── test_documentation_contract.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
+    ├── test_release_tooling.py
     └── test_support_scripts.py
 ```
 
@@ -290,10 +339,16 @@ python3 scripts/present-design.py --help >/dev/null
 python3 scripts/capture-audit.py --help >/dev/null
 python3 scripts/design-contract.py validate tests/fixtures/quality/design-contract.json --project-root . --require-approved
 python3 -m unittest discover -s tests -v
+python3 scripts/verify-product-journeys.py
+python3 scripts/check-secrets.py .
 bash scripts/detect-frontend-env.sh .
 ```
 
 GitHub `validate.yml` 还会对测试契约执行严格浏览器质量任务，覆盖 Playwright Chromium、axe-core、响应式状态/键盘流程、截图与 Lighthouse，并将验证报告和截图上传为 workflow artifact。
+
+## 版本与发布
+
+当前版本同时记录在 `VERSION` 与 `f-design.json`。变更记录见 `CHANGELOG.md`，本次发布摘要见 `RELEASE_NOTES.md`，安全升级步骤见 `UPGRADING.md`。真实 AIDE 模型调用可能消耗外部额度，因此作为独立检查明确报告，不与本地安装和同步混为一谈。
 
 ## Gitee 镜像
 

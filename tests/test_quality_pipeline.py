@@ -286,6 +286,22 @@ class VerifyUiSurfaceTest(unittest.TestCase):
             ["button-name", "link-name"],
         )
 
+    def test_missing_explicit_lighthouse_command_is_not_treated_as_available(self) -> None:
+        module = load_module("verify_ui_lighthouse", VERIFY_SCRIPT)
+        self.assertIsNone(module.resolve_command("/definitely/missing/lighthouse", "lighthouse"))
+
+    def test_lighthouse_spawn_failure_returns_structured_result(self) -> None:
+        module = load_module("verify_ui_lighthouse_spawn", VERIFY_SCRIPT)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = module.run_lighthouse(
+                "/definitely/missing/lighthouse",
+                "http://127.0.0.1:1",
+                pathlib.Path(temp_dir) / "report.json",
+            )
+        self.assertFalse(result["available"])
+        self.assertFalse(result["passed"])
+        self.assertIn("No such file", result["error"])
+
 
 if __name__ == "__main__":
     unittest.main()

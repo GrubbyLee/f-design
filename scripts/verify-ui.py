@@ -89,6 +89,15 @@ def resolve_axe_script(project_root: pathlib.Path, explicit: str | None) -> path
     return next((path.resolve() for path in candidates if path.is_file()), None)
 
 
+def resolve_command(explicit: str | None, fallback: str) -> str | None:
+    if explicit:
+        candidate = pathlib.Path(explicit).expanduser()
+        if candidate.parent != pathlib.Path(".") or "/" in explicit:
+            return str(candidate.resolve()) if candidate.is_file() and os.access(candidate, os.X_OK) else None
+        return shutil.which(explicit)
+    return shutil.which(fallback)
+
+
 def run_step(page, step: dict, target: str) -> str | None:
     action = step["action"]
     selector = step.get("selector")
@@ -167,20 +176,23 @@ def accessible_name_violations(axe_result: dict) -> list[str]:
 
 
 def run_lighthouse(command: str, target: str, output_path: pathlib.Path) -> dict:
-    result = subprocess.run(
-        [
-            command,
-            target,
-            "--quiet",
-            "--output=json",
-            f"--output-path={output_path}",
-            "--chrome-flags=--headless --no-sandbox --disable-gpu",
-        ],
-        capture_output=True,
-        text=True,
-        timeout=180,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            [
+                command,
+                target,
+                "--quiet",
+                "--output=json",
+                f"--output-path={output_path}",
+                "--chrome-flags=--headless --no-sandbox --disable-gpu",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=180,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"available": False, "passed": False, "error": str(exc)}
     if result.returncode != 0:
         return {"available": True, "passed": False, "error": result.stderr.strip() or result.stdout.strip()}
     report = json.loads(output_path.read_text(encoding="utf-8"))
@@ -220,7 +232,7 @@ def verify(args: argparse.Namespace) -> tuple[dict, int]:
     out_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
     axe_script = resolve_axe_script(project_root, args.axe_script)
-    lighthouse_command = args.lighthouse_command or shutil.which("lighthouse")
+    lighthouse_command = resolve_command(args.lighthouse_command, "lighthouse")
     report = {
         "passed": True,
         "contractEngine": engine,

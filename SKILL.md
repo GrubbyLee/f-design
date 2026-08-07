@@ -20,6 +20,8 @@ Read only the references required by the task:
 - Substantial implementation verification: `references/quality-gates.md`.
 - UI/UX review request: `references/review-rubric.md`.
 - Existing product/page design evaluation, pros/cons critique, or actionable improvement report: `references/product-design-review.md`, `references/review-rubric.md`, and `references/anti-ai-design-tells.md` when visual quality or generic AI-looking UI is in scope.
+- Specialized review targets: use the matching file under `references/review-templates/` for data tables, dashboards, complex forms, mobile navigation, or high-risk batch actions.
+- Release-level workflow verification or maintainer work: `references/end-to-end-journeys.md`.
 
 ## Context Files
 
@@ -94,6 +96,14 @@ Route the user's wording before selecting tools:
 - "review/audit/check UX/evaluate existing design/pros and cons/actionable improvements" -> product design review workflow; read `references/product-design-review.md` and `references/review-rubric.md`; also read `references/anti-ai-design-tells.md` when visual quality, redesign, landing pages, dashboards, or generic AI-looking UI is in scope.
 
 For existing product design reviews, start with a scope gate: state the explicit scope requested by the user and what is not included by default. Confirm expanded scope with the user before adding mobile/responsive, accessibility audits, redesigns, implementations, or downstream publishing goals. Then diagnose: classify the review mode, define product context, inspect the artifact, score strengths and weaknesses, and return prioritized, evidence-backed recommendations with implementation hints, tradeoffs, acceptance criteria, and verification steps. Do not redesign or implement unless the user asks for it or approves a proposed direction.
+
+Load one specialized review template when the artifact requires it:
+
+- Data tables, queues, inventories, or admin grids -> `references/review-templates/data-tables.md`.
+- Analytics, monitoring, or decision dashboards -> `references/review-templates/dashboards.md`.
+- Multi-step, dependent, high-consequence, or long forms -> `references/review-templates/complex-forms.md`.
+- Mobile navigation -> `references/review-templates/mobile-navigation.md`, only when mobile is in scope.
+- Destructive, permissioned, publishing, financial, or multi-record mutations -> `references/review-templates/high-risk-batch-actions.md`.
 
 ## AIDE Compatibility
 

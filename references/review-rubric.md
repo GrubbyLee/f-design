@@ -26,6 +26,8 @@ Add the relevant mode-specific checks from `references/product-design-review.md`
 - Form flow: field order, validation, recovery, progress, autofill, and exit safety.
 - Mobile/webview: thumb reach, keyboard viewport, fixed controls, safe areas, and intentional reflow.
 
+For deeper evidence and acceptance criteria, load the matching file under `references/review-templates/`: `data-tables.md`, `dashboards.md`, `complex-forms.md`, `mobile-navigation.md`, or `high-risk-batch-actions.md`.
+
 ## Critical Issues
 
 Fix these before delivery:

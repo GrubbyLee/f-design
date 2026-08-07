@@ -1,0 +1,43 @@
+# f-design v0.1.0
+
+`v0.1.0` is the first versioned release of the frontend design and production engineering orchestrator.
+
+## Release Outcome
+
+The release establishes a complete, inspectable workflow:
+
+```text
+project context -> design depth -> review artifact -> user approval
+-> executable contract -> implementation -> production QA
+```
+
+It also adds a diagnostic workflow for existing product/page designs and closes a serious context-isolation gap: a review may no longer silently inherit mobile, publishing, implementation, or other side goals from earlier conversation turns.
+
+## Highlights
+
+- Review artifacts must be opened, attached, or exposed through an immediately usable link before confirmation.
+- Approved Level 2 designs become machine-validated contracts.
+- Existing designs receive mode-aware, evidence-backed findings and actionable acceptance criteria.
+- Strict browser QA covers flows, states, breakpoints, console errors, overflow, axe, visual diffs, metrics, and optional Lighthouse budgets.
+- Codex, Claude Code, Cursor, and Qwen Code mirrors are synchronized by public-file digest and diagnosed with a single command.
+- Specialized review templates cover operational UI where generic landing-page heuristics are insufficient.
+
+## Upgrade
+
+```bash
+git pull --ff-only
+bash scripts/sync-aide.sh
+python3 scripts/f-design-doctor.py --strict
+```
+
+Reload each AIDE after synchronization if it caches discovered skills.
+
+## Verification
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/verify-product-journeys.py
+python3 scripts/check-secrets.py .
+```
+
+The GitHub `Validate` workflow additionally runs the strict Playwright browser-quality fixture.

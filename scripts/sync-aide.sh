@@ -12,6 +12,7 @@ TARGETS=(
   "${TARGET_HOME}/.cursor/skills/f-design"
   "${TARGET_HOME}/.qwen/skills/f-design"
 )
+DOCTOR="$SRC_REAL/scripts/f-design-doctor.py"
 
 if [[ ! -f "$SRC_REAL/SKILL.md" ]]; then
   echo "Missing source skill: $SRC_REAL/SKILL.md" >&2
@@ -40,7 +41,9 @@ for target in "${TARGETS[@]}"; do
   mkdir -p "$target"
   rsync -a --delete --delete-excluded \
     --exclude='.git/' \
+    --exclude='.github/' \
     --exclude='.codex/' \
+    --exclude='promo/' \
     --exclude='.f-design/profile.md' \
     --exclude='__pycache__/' \
     --exclude='*.pyc' \
@@ -49,3 +52,7 @@ for target in "${TARGETS[@]}"; do
     "$SRC_REAL/" "$target_real/"
   echo "Synced $target_real"
 done
+
+if [[ -f "$DOCTOR" ]]; then
+  python3 "$DOCTOR" --source "$SRC_REAL" --target-home "$TARGET_HOME" --strict
+fi

@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Opt-in provider-backed navigation smoke tests for supported AIDEs."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import pathlib
+import shutil
+import subprocess
+import sys
+
+
+PROMPT = (
+    "使用已安装的 f-design。只进入导航模式，不修改任何文件。读取 f-design.json 后，"
+    "第一行严格输出 F_DESIGN_SMOKE version=<版本号>，随后只列出三项可选前端任务。"
+)
+
+
+def commands(workspace: pathlib.Path) -> dict[str, list[str]]:
+    return {
+        "codex": [
+            "codex", "exec", "--skip-git-repo-check", "--ephemeral", "--sandbox", "read-only",
+            "--color", "never", PROMPT,
+        ],
+        "claude": [
+            "claude", "-p", "--permission-mode", "plan", "--no-session-persistence",
+            "/f-design " + PROMPT,
+        ],
+        "qwen": [
+            "qwen", "--approval-mode", "plan", "--chat-recording", "false", "--output-format", "text", PROMPT,
+        ],
+        "cursor": [
+            "cursor", "agent", "-p", "--mode", "ask", "--workspace", str(workspace), PROMPT,
+        ],
+    }
+
+
+def run_smoke(aide: str, command: list[str], workspace: pathlib.Path, version: str, timeout: int) -> dict:
+    executable = shutil.which(command[0])
+    if executable is None:
+        return {"aide": aide, "status": "not-installed", "command": command, "output": "CLI not found"}
+    try:
+        result = subprocess.run(
+            command,
+            cwd=workspace,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+        output = (result.stdout + result.stderr).strip()
+    except subprocess.TimeoutExpired as exc:
+        output = ((exc.stdout or "") + (exc.stderr or "")).strip()
+        return {"aide": aide, "status": "blocked", "command": command, "output": output or "timed out"}
+    marker = f"F_DESIGN_SMOKE version={version}"
+    status = "invoked" if result.returncode == 0 and marker in output else "blocked"
+    return {
+        "aide": aide,
+        "status": status,
+        "exitCode": result.returncode,
+        "command": command,
+        "output": output,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Run explicit provider-backed f-design invocation tests. May consume model quota."
+    )
+    parser.add_argument("--aide", action="append", choices=("codex", "claude", "qwen", "cursor"), required=True)
+    parser.add_argument("--workspace", default="/tmp")
+    parser.add_argument("--timeout", type=int, default=120)
+    parser.add_argument("--json-out")
+    parser.add_argument("--yes-consume-provider-quota", action="store_true")
+    args = parser.parse_args()
+    if not args.yes_consume_provider_quota:
+        print("Refusing provider calls without --yes-consume-provider-quota", file=sys.stderr)
+        return 2
+    root = pathlib.Path(__file__).resolve().parents[1]
+    version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    workspace = pathlib.Path(args.workspace).resolve()
+    available = commands(workspace)
+    results = [run_smoke(aide, available[aide], workspace, version, args.timeout) for aide in args.aide]
+    payload = {"version": version, "results": results}
+    rendered = json.dumps(payload, ensure_ascii=False, indent=2)
+    if args.json_out:
+        pathlib.Path(args.json_out).write_text(rendered + "\n", encoding="utf-8")
+    print(rendered)
+    return 0 if all(item["status"] == "invoked" for item in results) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

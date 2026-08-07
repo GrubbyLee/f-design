@@ -88,6 +88,16 @@ First classify the artifact. Use one primary mode and optional secondary modes:
 | Accessibility audit | User asks for inclusive/accessibility review | Keyboard path, focus order, labels, contrast, semantics, reduced motion, zoom/reflow |
 | Competitive/reference comparison | User provides competitor/reference | What to borrow, what to reject, differentiation, parity gaps, verification needed |
 
+## Specialized Review Templates
+
+Use exactly the relevant templates; do not expand the review scope merely because a template exists:
+
+- `references/review-templates/data-tables.md`: tables, queues, inventories, CRM/admin grids.
+- `references/review-templates/dashboards.md`: analytics, monitoring, KPIs, and decision dashboards.
+- `references/review-templates/complex-forms.md`: onboarding, applications, checkout, configuration, and multi-step editors.
+- `references/review-templates/mobile-navigation.md`: mobile-first navigation or explicitly requested mobile review.
+- `references/review-templates/high-risk-batch-actions.md`: destructive, permissioned, financial, publishing, and multi-record operations.
+
 For operational tools, prefer the SaaS/admin/product workbench mode over marketing-page heuristics. Do not penalize a dense tool merely because it is not airy or editorial.
 
 ## Evidence Protocol

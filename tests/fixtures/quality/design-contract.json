@@ -62,7 +62,7 @@
   "visualBaselines": {},
   "approval": {
     "direction": "Minimal semantic fixture",
-    "artifacts": ["tests/fixtures/quality/index.html"],
+    "artifacts": ["tests/fixtures/quality/review-artifact.html"],
     "tradeoffs": ["Fixture tests the verification pipeline rather than product styling"]
   }
 }
