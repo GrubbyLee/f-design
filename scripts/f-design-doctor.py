@@ -13,6 +13,11 @@ import shutil
 import sys
 from dataclasses import asdict, dataclass
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 EXCLUDED_PARTS = {".git", ".github", ".codex", "promo", "__pycache__"}
 EXCLUDED_NAMES = {".DS_Store"}
@@ -140,17 +145,18 @@ def report(source: pathlib.Path, target_home: pathlib.Path) -> dict:
     }
 
 
-def print_human(data: dict) -> None:
+def print_human(data: dict, locale: str) -> None:
     print(f"f-design {data['version']}")
-    print(f"Source: {data['source']}")
-    print(f"Version file: {data['versionFile']} ({'consistent' if data['versionConsistent'] else 'MISMATCH'})")
-    print(f"Public digest: {data['sourceDigest'][:12]}")
+    print(f"{t('Source', locale)}: {data['source']}")
+    consistency = t("consistent", locale) if data["versionConsistent"] else t("MISMATCH", locale)
+    print(f"{t('Version file', locale)}: {data['versionFile']} ({consistency})")
+    print(f"{t('Public digest', locale)}: {data['sourceDigest'][:12]}")
     if data["missingSourceRequired"]:
-        print("Source manifest: FAIL")
+        print(t("Source manifest: FAIL", locale))
         for item in data["missingSourceRequired"]:
             print(f"  missing: {item}")
     else:
-        print("Source manifest: OK")
+        print(t("Source manifest: OK", locale))
     for target in data["targets"]:
         if not target["installed"]:
             status = "MISSING"
@@ -160,28 +166,29 @@ def print_human(data: dict) -> None:
             status = "STALE"
         command = "available" if data["commands"].get(target["aide"]) else "CLI not found"
         version = target["version"] or "unknown"
-        print(f"{target['aide']}: {status} (version {version}; {command}) -> {target['path']}")
+        print(f"{target['aide']}: {status} ({t('version {version}; {command}', locale, version=version, command=command)}) -> {target['path']}")
         for item in target["missing_required"]:
             print(f"  missing: {item}")
-    print("Overall: OK" if data["healthy"] else "Overall: ACTION REQUIRED")
+    print(t("Overall: OK", locale) if data["healthy"] else t("Overall: ACTION REQUIRED", locale))
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check f-design version and local AIDE synchronization.")
+    parser = argparse.ArgumentParser(description=t("Check f-design version and local AIDE synchronization."))
+    add_locale_argument(parser)
     parser.add_argument("--source", default=str(pathlib.Path(__file__).resolve().parents[1]))
     parser.add_argument("--target-home", default=os.environ.get("F_DESIGN_TARGET_HOME", str(pathlib.Path.home())))
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--strict", action="store_true", help="Exit non-zero when any AIDE target is missing or stale")
+    parser.add_argument("--strict", action="store_true", help=t("Exit non-zero when any AIDE target is missing or stale"))
     args = parser.parse_args()
     try:
         data = report(pathlib.Path(args.source).resolve(), pathlib.Path(args.target_home).resolve())
     except ValueError as exc:
-        print(f"Doctor error: {exc}", file=sys.stderr)
+        print(t("Doctor error: {error}", args.locale, error=exc), file=sys.stderr)
         return 2
     if args.json:
         print(json.dumps(data, ensure_ascii=False, indent=2))
     else:
-        print_human(data)
+        print_human(data, args.locale)
     return 1 if args.strict and not data["healthy"] else 0
 
 

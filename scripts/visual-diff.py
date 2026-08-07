@@ -4,6 +4,11 @@ import json
 import pathlib
 import sys
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 def load_pillow():
     try:
@@ -56,7 +61,8 @@ def compare_images(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Compare two UI screenshots with a pixel tolerance.")
+    parser = argparse.ArgumentParser(description=t("Compare two UI screenshots with a pixel tolerance."))
+    add_locale_argument(parser)
     parser.add_argument("baseline")
     parser.add_argument("current")
     parser.add_argument("--diff-out")
@@ -81,7 +87,7 @@ def main() -> int:
             pixel_threshold=args.pixel_threshold,
         )
     except (FileNotFoundError, RuntimeError, ValueError) as exc:
-        print(f"visual-diff failed: {exc}", file=sys.stderr)
+        print(t("visual-diff failed: {error}", args.locale, error=exc), file=sys.stderr)
         return 2
     result["maxRatio"] = args.max_ratio
     result["passed"] = result["comparable"] and result["ratio"] <= args.max_ratio

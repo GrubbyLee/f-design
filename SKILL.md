@@ -22,6 +22,7 @@ Read only the references required by the task:
 - Existing product/page design evaluation, pros/cons critique, or actionable improvement report: `references/product-design-review.md`, `references/review-rubric.md`, and `references/anti-ai-design-tells.md` when visual quality or generic AI-looking UI is in scope.
 - Specialized review targets: use the matching file under `references/review-templates/` for data tables, dashboards, complex forms, mobile navigation, or high-risk batch actions.
 - Release-level workflow verification or maintainer work: `references/end-to-end-journeys.md`.
+- Internationalization, CLI language selection, or translated maintainer docs: `references/internationalization.md`.
 
 ## Context Files
 
@@ -116,6 +117,10 @@ Treat `f-design` as tool-neutral.
 - Other AIDE: use the same folder as a portable skill; if the tool has no skill protocol, tell the agent to read `SKILL.md` and follow `f-design`.
 
 For local setup details, read `references/aide-integration.md` only when the user asks about installing, syncing, or using this skill in another AIDE.
+
+## Language And Internationalization
+
+Follow `references/internationalization.md` when the user requests a language, translated instructions, or localized CLI output. Match the user's current request language by default. CLI helpers accept `--locale en|zh-CN` and resolve environment defaults through `F_DESIGN_LOCALE`, `LC_ALL`, and `LANG`. Keep JSON field names and machine-readable values stable in English; localize human-readable help, status, and error text only.
 
 ## Workflow
 

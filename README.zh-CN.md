@@ -19,7 +19,7 @@
 
 `f-design` 不是又一个 UI 风格预设，而是一个前端设计与生产工程总控 skill：它帮助 AI 编程助手理解仓库、判断并呈现设计方向、锁定可执行契约、完成实现，并在交付前验证行为与质量。
 
-当前版本：**v0.1.1**。不同环境的“已安装、已同步、模型实际调用”证据分开记录在 [AIDE 兼容性报告](COMPATIBILITY.md) 中。
+当前版本：**v0.1.1**。不同环境的“已安装、已同步、模型实际调用”证据分开记录在 [AIDE 兼容性报告](COMPATIBILITY.zh-CN.md) 中。
 
 它的目标是减少模板化、AI 味明显的前端界面，让前端设计和开发形成稳定闭环。
 
@@ -262,6 +262,13 @@ python3 scripts/smoke-aides.py --aide codex --yes-consume-provider-quota
 python3 scripts/verify-product-journeys.py
 ```
 
+显式选择 CLI 语言，或通过 `F_DESIGN_LOCALE` 设置默认语言：
+
+```bash
+python3 scripts/present-design.py --locale zh-CN --help
+F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+```
+
 根据 Scope Gate 契约评估一次真实 agent 输出：
 
 ```bash
@@ -275,16 +282,23 @@ python3 scripts/evaluate-review-output.py \
 ```text
 .
 ├── SKILL.md
+├── SKILL.zh-CN.md
 ├── VERSION
 ├── f-design.json
 ├── CHANGELOG.md
+├── CHANGELOG.zh-CN.md
 ├── COMPATIBILITY.md
+├── COMPATIBILITY.zh-CN.md
 ├── RELEASE_NOTES.md
+├── RELEASE_NOTES.zh-CN.md
 ├── UPGRADING.md
+├── UPGRADING.zh-CN.md
 ├── agents/
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── internationalization.md
+│   ├── internationalization.zh-CN.md
 │   ├── anti-ai-design-tells.md
 │   ├── artifact-presentation.md
 │   ├── design-contract.schema.json
@@ -303,6 +317,7 @@ python3 scripts/evaluate-review-output.py \
 │   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
+│   ├── i18n.py
 │   ├── capture-audit.py
 │   ├── check-secrets.py
 │   ├── design-contract.py
@@ -317,11 +332,15 @@ python3 scripts/evaluate-review-output.py \
 │   ├── verify-ui.py
 │   ├── verify-product-journeys.py
 │   └── visual-diff.py
+├── locales/
+│   ├── en.json
+│   └── zh-CN.json
 └── tests/
     ├── fixtures/quality/
     ├── fixtures/review-behavior/
     ├── test_behavior_evaluations.py
     ├── test_documentation_contract.py
+    ├── test_i18n.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
     ├── test_release_tooling.py
@@ -348,7 +367,7 @@ GitHub `validate.yml` 还会对测试契约执行严格浏览器质量任务，�
 
 ## 版本与发布
 
-当前版本同时记录在 `VERSION` 与 `f-design.json`。变更记录见 `CHANGELOG.md`，本次发布摘要见 `RELEASE_NOTES.md`，安全升级步骤见 `UPGRADING.md`。真实 AIDE 模型调用可能消耗外部额度，因此作为独立检查明确报告，不与本地安装和同步混为一谈。
+当前版本同时记录在 `VERSION` 与 `f-design.json`。变更记录见 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)，本次发布摘要见 [RELEASE_NOTES.zh-CN.md](RELEASE_NOTES.zh-CN.md)，安全升级步骤见 [UPGRADING.zh-CN.md](UPGRADING.zh-CN.md)。真实 AIDE 模型调用可能消耗外部额度，因此作为独立检查明确报告，不与本地安装和同步混为一谈。
 
 ## Gitee 镜像
 

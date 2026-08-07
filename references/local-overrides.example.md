@@ -3,7 +3,7 @@
 Copy this to `~/.f-design/preferences.md` for machine-local preferences. Do not commit personal preferences to a public skill repository.
 
 ```text
-Default language:
+Default language: en or zh-CN
 Preferred frontend stack:
 Preferred package manager:
 Preferred icon library:
@@ -20,7 +20,7 @@ Local commands:
 Example:
 
 ```text
-Default language: Chinese
+Default language: zh-CN
 Preferred frontend stack: React, Next.js, Vite
 Preferred package manager: follow existing lockfile
 Default screenshot devices: 1440x900, 1024x768, 390x844

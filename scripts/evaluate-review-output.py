@@ -9,6 +9,11 @@ import pathlib
 import re
 import sys
 
+try:
+    from i18n import add_locale_argument, resolve_locale, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, resolve_locale, t
+
 
 SCOPE_PATTERN = re.compile(r"^(?:\*\*)?Review scope(?:\*\*)?:\s*(.+)$", re.IGNORECASE)
 EXCLUDED_PATTERN = re.compile(r"^(?:\*\*)?Not included by default(?:\*\*)?:\s*(.+)$", re.IGNORECASE)
@@ -61,9 +66,11 @@ def evaluate(case: dict, response: str) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check a captured design-review response against its scope contract.")
-    parser.add_argument("case", help="JSON scope contract")
-    parser.add_argument("response", help="Captured Markdown/text response")
+    locale = resolve_locale()
+    parser = argparse.ArgumentParser(description=t("Check a captured design-review response against its scope contract.", locale))
+    add_locale_argument(parser)
+    parser.add_argument("case", help=t("JSON scope contract", locale))
+    parser.add_argument("response", help=t("Captured Markdown/text response", locale))
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     try:
@@ -71,17 +78,17 @@ def main() -> int:
         response = pathlib.Path(args.response).read_text(encoding="utf-8")
         errors = evaluate(case, response)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        print(f"Evaluation error: {exc}", file=sys.stderr)
+        print(t("Evaluation error: {error}", args.locale, error=exc), file=sys.stderr)
         return 2
     result = {"case": case.get("id"), "passed": not errors, "errors": errors}
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     elif errors:
-        print(f"Review behavior: FAIL ({case.get('id', 'unknown')})")
+        print(t("Review behavior: FAIL ({id})", args.locale, id=case.get("id", "unknown")))
         for error in errors:
             print(f"- {error}")
     else:
-        print(f"Review behavior: PASS ({case.get('id', 'unknown')})")
+        print(t("Review behavior: PASS ({id})", args.locale, id=case.get("id", "unknown")))
     return 0 if not errors else 1
 
 

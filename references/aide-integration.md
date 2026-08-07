@@ -122,3 +122,7 @@ Do not rely on one product's invocation syntax inside the skill body. The portab
 ```text
 Read SKILL.md and follow f-design.
 ```
+
+## CLI Language
+
+The AIDE invocation syntax and the helper CLI locale are independent. Use `--locale zh-CN` for a single command or set `F_DESIGN_LOCALE=zh-CN` for the session. See `references/internationalization.md` for precedence, fallback, and JSON stability rules.

@@ -2,6 +2,14 @@
 
 All notable changes to `f-design` are documented here. The project follows Semantic Versioning from `v0.1.0` onward.
 
+## [Unreleased]
+
+### Added
+
+- Locale contract and message catalogs for `en` and `zh-CN`.
+- Localized CLI help and human-readable status/error output with English fallback.
+- Bilingual maintainer and release documents plus catalog parity tests.
+
 ## [0.1.1] - 2026-08-07
 
 ### Fixed

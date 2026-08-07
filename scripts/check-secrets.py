@@ -9,6 +9,11 @@ import re
 import subprocess
 import sys
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 RULES = {
     "OpenAI-style API key": re.compile(r"(?<![A-Za-z0-9])" + "sk-" + r"[A-Za-z0-9_-]{20,}(?![A-Za-z0-9])"),
@@ -64,17 +69,18 @@ def scan(root: pathlib.Path) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Scan tracked files for likely credentials and local paths.")
+    parser = argparse.ArgumentParser(description=t("Scan tracked files for likely credentials and local paths."))
+    add_locale_argument(parser)
     parser.add_argument("root", nargs="?", default=".")
     args = parser.parse_args()
     root = pathlib.Path(args.root).resolve()
     findings = scan(root)
     if findings:
-        print("Potential secret or local-path leakage:")
+        print(t("Potential secret or local-path leakage:", args.locale))
         for finding in findings:
             print(f"- {finding}")
         return 1
-    print("Secret and local-path scan: OK")
+    print(t("Secret and local-path scan: OK", args.locale))
     return 0
 
 

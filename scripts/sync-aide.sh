@@ -6,6 +6,38 @@ DEFAULT_SRC="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 SRC="${F_DESIGN_SRC:-$DEFAULT_SRC}"
 SRC_REAL="$(realpath "$SRC")"
 TARGET_HOME="${F_DESIGN_TARGET_HOME:-$HOME}"
+LOCALE="${F_DESIGN_LOCALE:-${LC_ALL:-${LANG:-en}}}"
+case "${LOCALE,,}" in
+  zh|zh-cn|zh_cn|zh-cn.*) LOCALE="zh-CN" ;;
+  *) LOCALE="en" ;;
+esac
+if [[ "${1:-}" == "--locale" && -n "${2:-}" ]]; then
+  case "${2,,}" in
+    zh|zh-cn|zh_cn) LOCALE="zh-CN" ;;
+    en|en-us|en_us) LOCALE="en" ;;
+    *) LOCALE="en" ;;
+  esac
+fi
+msg() {
+  local key="$1"
+  if [[ "$LOCALE" == "zh-CN" ]]; then
+    case "$key" in
+      missing-source) echo "缺少源 skill：$SRC_REAL/SKILL.md" ;;
+      missing-rsync) echo "缺少必需命令：rsync" ;;
+      skipped) echo "已跳过源目录目标 $2" ;;
+      refusing) echo "拒绝同步到源目录的子目录：$2" ;;
+      synced) echo "已同步 $2" ;;
+    esac
+  else
+    case "$key" in
+      missing-source) echo "Missing source skill: $SRC_REAL/SKILL.md" ;;
+      missing-rsync) echo "Missing required command: rsync" ;;
+      skipped) echo "Skipped source target $2" ;;
+      refusing) echo "Refusing to sync into a subdirectory of source: $2" ;;
+      synced) echo "Synced $2" ;;
+    esac
+  fi
+}
 TARGETS=(
   "${TARGET_HOME}/.codex/skills/f-design"
   "${TARGET_HOME}/.claude/skills/f-design"
@@ -15,12 +47,12 @@ TARGETS=(
 DOCTOR="$SRC_REAL/scripts/f-design-doctor.py"
 
 if [[ ! -f "$SRC_REAL/SKILL.md" ]]; then
-  echo "Missing source skill: $SRC_REAL/SKILL.md" >&2
+  msg missing-source >&2
   exit 1
 fi
 
 if ! command -v rsync >/dev/null 2>&1; then
-  echo "Missing required command: rsync" >&2
+  msg missing-rsync >&2
   exit 1
 fi
 
@@ -28,12 +60,12 @@ for target in "${TARGETS[@]}"; do
   target_real="$(realpath -m "$target")"
 
   if [[ "$target_real" == "$SRC_REAL" ]]; then
-    echo "Skipped source target $target_real"
+    msg skipped "$target_real"
     continue
   fi
 
   if [[ "$target_real/" == "$SRC_REAL/"* ]]; then
-    echo "Refusing to sync into a subdirectory of source: $target_real" >&2
+    msg refusing "$target_real" >&2
     exit 1
   fi
 
@@ -50,9 +82,9 @@ for target in "${TARGETS[@]}"; do
     --exclude='.DS_Store' \
     --exclude='*.tmp' \
     "$SRC_REAL/" "$target_real/"
-  echo "Synced $target_real"
+  msg synced "$target_real"
 done
 
 if [[ -f "$DOCTOR" ]]; then
-  python3 "$DOCTOR" --source "$SRC_REAL" --target-home "$TARGET_HOME" --strict
+  python3 "$DOCTOR" --source "$SRC_REAL" --target-home "$TARGET_HOME" --strict --locale "$LOCALE"
 fi

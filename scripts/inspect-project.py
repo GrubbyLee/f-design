@@ -5,6 +5,11 @@ import pathlib
 import sys
 from typing import Iterable
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 SCHEMA_VERSION = "1.0"
 IGNORED_DIRS = {
@@ -300,16 +305,17 @@ def render_markdown(report: dict) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Inspect a frontend project and emit structured context.")
-    parser.add_argument("root", nargs="?", default=".", help="Project root")
+    parser = argparse.ArgumentParser(description=t("Inspect a frontend project and emit structured context."))
+    add_locale_argument(parser)
+    parser.add_argument("root", nargs="?", default=".", help=t("Project root"))
     parser.add_argument("--format", choices=("json", "markdown"), default="json")
-    parser.add_argument("--out", help="Output path; stdout when omitted")
+    parser.add_argument("--out", help=t("Output path; stdout when omitted"))
     args = parser.parse_args()
 
     try:
         report = scan_project(args.root)
     except ValueError as exc:
-        print(f"inspect-project failed: {exc}", file=sys.stderr)
+        print(t("inspect-project failed: {error}", args.locale, error=exc), file=sys.stderr)
         return 1
     output = (
         json.dumps(report, indent=2, ensure_ascii=False) + "\n"

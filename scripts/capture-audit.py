@@ -6,6 +6,11 @@ import shutil
 import sys
 from urllib.parse import urlparse
 
+try:
+    from i18n import add_locale_argument, resolve_locale, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, resolve_locale, t
+
 
 VIEWPORTS = {
     "desktop": (1440, 900),
@@ -35,15 +40,16 @@ def load_sync_playwright():
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Capture desktop, tablet, and mobile screenshots for frontend QA."
+        description=t("Capture desktop, tablet, and mobile screenshots for frontend QA.", resolve_locale())
     )
-    parser.add_argument("target", help="URL or local HTML file path")
-    parser.add_argument("--out", default=".codex/frontend-audit", help="Output directory")
-    parser.add_argument("--wait-ms", type=int, default=1200, help="Wait after load")
+    add_locale_argument(parser)
+    parser.add_argument("target", help=t("URL or local HTML file path"))
+    parser.add_argument("--out", default=".codex/frontend-audit", help=t("Output directory"))
+    parser.add_argument("--wait-ms", type=int, default=1200, help=t("Wait after load"))
     parser.add_argument(
         "--chromium",
         default="/usr/bin/chromium",
-        help="Chromium executable path",
+        help=t("Chromium executable path"),
     )
     args = parser.parse_args()
 
@@ -71,5 +77,5 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as exc:
-        print(f"capture-audit failed: {exc}", file=sys.stderr)
+        print(t("capture-audit failed: {error}", resolve_locale(), error=exc), file=sys.stderr)
         raise SystemExit(1)

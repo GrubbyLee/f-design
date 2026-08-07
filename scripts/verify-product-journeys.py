@@ -9,6 +9,12 @@ import pathlib
 import subprocess
 import sys
 import tempfile
+import argparse
+
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -29,6 +35,9 @@ def run(label: str, command: list[str], env: dict[str, str] | None = None) -> tu
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=t("Run deterministic f-design product journey checks."))
+    add_locale_argument(parser)
+    args = parser.parse_args()
     results: list[tuple[bool, str]] = []
 
     results.append(
@@ -99,7 +108,7 @@ def main() -> int:
     for _, output in results:
         print(output)
     passed = sum(1 for ok, _ in results if ok)
-    print(f"Product journeys: {passed}/{len(results)} passed")
+    print(t("Product journeys: {passed}/{total} passed", args.locale, passed=passed, total=len(results)))
     return 0 if passed == len(results) else 1
 
 

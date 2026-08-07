@@ -16,9 +16,13 @@
     "references/artifact-presentation.md",
     "references/product-design-review.md",
     "references/anti-ai-design-tells.md",
+    "references/internationalization.md",
     "references/quality-gates.md",
+    "scripts/i18n.py",
     "scripts/f-design-doctor.py",
     "scripts/smoke-aides.py",
-    "scripts/sync-aide.sh"
+    "scripts/sync-aide.sh",
+    "locales/en.json",
+    "locales/zh-CN.json"
   ]
 }

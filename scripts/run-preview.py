@@ -12,6 +12,11 @@ import urllib.error
 import urllib.request
 import webbrowser
 
+try:
+    from i18n import add_locale_argument, resolve_locale, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, resolve_locale, t
+
 
 DEFAULT_STATE = pathlib.Path(".codex/f-design/preview.json")
 REMOTE_ENV_MARKERS = (
@@ -199,7 +204,7 @@ def command_start(args: argparse.Namespace) -> int:
     state_path = pathlib.Path(args.state).expanduser().resolve()
     cwd = pathlib.Path(args.cwd).expanduser().resolve()
     if not cwd.is_dir():
-        print(f"Preview working directory does not exist: {cwd}", file=sys.stderr)
+        print(t("Preview working directory does not exist: {path}", args.locale, path=cwd), file=sys.stderr)
         return 1
     if state_path.exists():
         try:
@@ -207,13 +212,13 @@ def command_start(args: argparse.Namespace) -> int:
         except RuntimeError:
             existing = {}
         if process_matches(existing):
-            print(f"A preview is already running (PID {existing['pid']}).", file=sys.stderr)
+            print(t("A preview is already running (PID {pid}).", args.locale, pid=existing["pid"]), file=sys.stderr)
             return 1
         state_path.unlink(missing_ok=True)
 
     command = shlex.split(args.command, posix=os.name != "nt")
     if not command:
-        print("Preview command cannot be empty", file=sys.stderr)
+        print(t("Preview command cannot be empty", args.locale), file=sys.stderr)
         return 1
     log_path = pathlib.Path(args.log).expanduser().resolve() if args.log else state_path.with_suffix(".log")
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -235,13 +240,13 @@ def command_start(args: argparse.Namespace) -> int:
         health = wait_until_healthy(args.health_url, process, args.wait)
     except RuntimeError as exc:
         terminate_spawned_process(process)
-        print(f"Failed to start preview: {exc}. Log: {log_path}", file=sys.stderr)
+        print(t("Failed to start preview: {error}. Log: {log}", args.locale, error=exc, log=log_path), file=sys.stderr)
         return 1
 
     process_marker = process_start_marker(process.pid)
     if not process_marker:
         terminate_spawned_process(process)
-        print("Failed to start preview: could not establish a safe process identity", file=sys.stderr)
+        print(t("Failed to start preview: could not establish a safe process identity", args.locale), file=sys.stderr)
         return 1
     state = {
         "version": 1,
@@ -255,13 +260,13 @@ def command_start(args: argparse.Namespace) -> int:
         "startedAt": int(time.time()),
     }
     write_state(state_path, state)
-    print("Preview: running")
+    print(t("Preview: running", args.locale))
     print(f"PID: {process.pid}")
     print(f"URL: {args.url}")
     print(f"Health: {health}")
-    print(f"State: {state_path}")
-    print(f"Log: {log_path}")
-    print(f"Browser: {open_browser(args.url, args.browser)}")
+    print(f"{t('State', args.locale)}: {state_path}")
+    print(f"{t('Log', args.locale)}: {log_path}")
+    print(f"{t('Browser', args.locale)}: {open_browser(args.url, args.browser)}")
     return 0
 
 
@@ -270,13 +275,13 @@ def command_status(args: argparse.Namespace) -> int:
     try:
         state = load_state(state_path)
     except RuntimeError as exc:
-        print(f"Preview: not running ({exc})")
+        print(t("Preview: not running ({error})", args.locale, error=exc))
         return 1
     if not process_matches(state):
-        print("Preview: not running (stale state)")
+        print(t("Preview: not running (stale state)", args.locale))
         return 1
     healthy, message = health_check(state["healthUrl"])
-    print("Preview: running" if healthy else "Preview: process running, health check failed")
+    print(t("Preview: running", args.locale) if healthy else t("Preview: process running, health check failed", args.locale))
     print(f"PID: {state['pid']}")
     print(f"URL: {state['url']}")
     print(f"Health: {message}")
@@ -287,31 +292,34 @@ def command_status(args: argparse.Namespace) -> int:
 def command_stop(args: argparse.Namespace) -> int:
     state_path = pathlib.Path(args.state).expanduser().resolve()
     if not state_path.exists():
-        print(f"Preview: no active state at {state_path}")
+        print(t("Preview: no active state at {path}", args.locale, path=state_path))
         return 0
     try:
         state = load_state(state_path)
     except RuntimeError as exc:
-        print(f"Preview: cannot stop safely ({exc})", file=sys.stderr)
+        print(t("Preview: cannot stop safely ({error})", args.locale, error=exc), file=sys.stderr)
         return 1
     stopped = terminate(state)
     state_path.unlink(missing_ok=True)
-    print("Preview: stopped" if stopped else "Preview: stale state removed")
+    print(t("Preview: stopped", args.locale) if stopped else t("Preview: stale state removed", args.locale))
     return 0
 
 
 def add_state_option(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--state", default=str(DEFAULT_STATE), help="Preview state file")
+    parser.add_argument("--state", default=str(DEFAULT_STATE), help=t("Preview state file"))
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Start, inspect, and stop a managed frontend preview.")
+    locale = resolve_locale()
+    parser = argparse.ArgumentParser(description=t("Start, inspect, and stop a managed frontend preview.", locale))
+    add_locale_argument(parser)
     subparsers = parser.add_subparsers(dest="action", required=True)
 
-    start = subparsers.add_parser("start", help="Start a preview command and wait for health")
-    start.add_argument("--command", required=True, help="Command parsed without a shell")
-    start.add_argument("--url", required=True, help="URL to open for the user")
-    start.add_argument("--health-url", help="Health URL; defaults to --url")
+    start = subparsers.add_parser("start", help=t("Start a preview command and wait for health", locale))
+    add_locale_argument(start, suppress_default=True)
+    start.add_argument("--command", required=True, help=t("Command parsed without a shell", locale))
+    start.add_argument("--url", required=True, help=t("URL to open for the user", locale))
+    start.add_argument("--health-url", help=t("Health URL; defaults to --url", locale))
     start.add_argument("--cwd", default=".")
     start.add_argument("--log")
     start.add_argument("--wait", type=float, default=30.0)
@@ -319,11 +327,13 @@ def parse_args() -> argparse.Namespace:
     add_state_option(start)
     start.set_defaults(handler=command_start)
 
-    status = subparsers.add_parser("status", help="Inspect the managed preview")
+    status = subparsers.add_parser("status", help=t("Inspect the managed preview", locale))
+    add_locale_argument(status, suppress_default=True)
     add_state_option(status)
     status.set_defaults(handler=command_status)
 
-    stop = subparsers.add_parser("stop", help="Stop the managed preview")
+    stop = subparsers.add_parser("stop", help=t("Stop the managed preview", locale))
+    add_locale_argument(stop, suppress_default=True)
     add_state_option(stop)
     stop.set_defaults(handler=command_stop)
     args = parser.parse_args()

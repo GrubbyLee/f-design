@@ -10,6 +10,11 @@ import subprocess
 import sys
 from urllib.parse import urljoin, urlparse
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CONTRACT_SCRIPT = ROOT / "scripts" / "design-contract.py"
@@ -363,8 +368,9 @@ def verify(args: argparse.Namespace) -> tuple[dict, int]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run contract-driven frontend interaction and production QA.")
-    parser.add_argument("target", help="HTTP(S) URL or local HTML path")
+    parser = argparse.ArgumentParser(description=t("Run contract-driven frontend interaction and production QA."))
+    add_locale_argument(parser)
+    parser.add_argument("target", help=t("HTTP(S) URL or local HTML path"))
     parser.add_argument("--contract", default=".codex/f-design/design-contract.json")
     parser.add_argument("--project-root", default=".")
     parser.add_argument("--out", default=".codex/f-design/verification")
@@ -382,7 +388,7 @@ def main() -> int:
     try:
         report, code = verify(args)
     except (RuntimeError, ValueError) as exc:
-        print(f"verify-ui failed: {exc}", file=sys.stderr)
+        print(t("verify-ui failed: {error}", args.locale, error=exc), file=sys.stderr)
         return 2
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return code

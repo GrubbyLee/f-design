@@ -19,7 +19,7 @@ English | [简体中文](README.zh-CN.md)
 
 `f-design` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
 
-Current version: **v0.1.1**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence.
+Current version: **v0.1.1**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence. Chinese release notes are available in [中文兼容性](COMPATIBILITY.zh-CN.md).
 
 Use it when you want fewer generic AI-looking interfaces and a more disciplined frontend design/development loop.
 
@@ -262,6 +262,13 @@ Run the deterministic design-approval, review-isolation, and cross-AIDE product 
 python3 scripts/verify-product-journeys.py
 ```
 
+Select CLI language explicitly or through `F_DESIGN_LOCALE`:
+
+```bash
+python3 scripts/present-design.py --locale zh-CN --help
+F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+```
+
 Evaluate a captured agent review against a scope contract:
 
 ```bash
@@ -275,16 +282,23 @@ python3 scripts/evaluate-review-output.py \
 ```text
 .
 ├── SKILL.md
+├── SKILL.zh-CN.md
 ├── VERSION
 ├── f-design.json
 ├── CHANGELOG.md
+├── CHANGELOG.zh-CN.md
 ├── COMPATIBILITY.md
+├── COMPATIBILITY.zh-CN.md
 ├── RELEASE_NOTES.md
+├── RELEASE_NOTES.zh-CN.md
 ├── UPGRADING.md
+├── UPGRADING.zh-CN.md
 ├── agents/
 │   └── openai.yaml
 ├── references/
 │   ├── aide-integration.md
+│   ├── internationalization.md
+│   ├── internationalization.zh-CN.md
 │   ├── anti-ai-design-tells.md
 │   ├── artifact-presentation.md
 │   ├── design-contract.schema.json
@@ -303,6 +317,7 @@ python3 scripts/evaluate-review-output.py \
 │   ├── state-and-data.md
 │   └── review-rubric.md
 ├── scripts/
+│   ├── i18n.py
 │   ├── capture-audit.py
 │   ├── design-contract.py
 │   ├── check-secrets.py
@@ -317,11 +332,15 @@ python3 scripts/evaluate-review-output.py \
 │   ├── verify-ui.py
 │   ├── verify-product-journeys.py
 │   └── visual-diff.py
+├── locales/
+│   ├── en.json
+│   └── zh-CN.json
 └── tests/
     ├── fixtures/quality/
     ├── fixtures/review-behavior/
     ├── test_behavior_evaluations.py
     ├── test_documentation_contract.py
+    ├── test_i18n.py
     ├── test_present_design.py
     ├── test_quality_pipeline.py
     ├── test_release_tooling.py
@@ -348,7 +367,7 @@ The GitHub `validate.yml` workflow also runs a strict browser-quality job agains
 
 ## Versioning And Releases
 
-The current release is declared in `VERSION` and `f-design.json`. See `CHANGELOG.md` for changes, `RELEASE_NOTES.md` for the current release summary, and `UPGRADING.md` for safe upgrade instructions. Provider-side AIDE invocation remains an explicit, separately reported check because it can consume external model quota.
+The current release is declared in `VERSION` and `f-design.json`. See `CHANGELOG.md` ([中文](CHANGELOG.zh-CN.md)) for changes, `RELEASE_NOTES.md` ([中文](RELEASE_NOTES.zh-CN.md)) for the current release summary, and `UPGRADING.md` ([中文](UPGRADING.zh-CN.md)) for safe upgrade instructions. Provider-side AIDE invocation remains an explicit, separately reported check because it can consume external model quota.
 
 ## Gitee Mirror
 

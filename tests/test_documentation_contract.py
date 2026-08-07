@@ -179,6 +179,25 @@ class ProductDesignReviewDocumentationTest(unittest.TestCase):
             self.assertIn("CHANGELOG.md", content)
             self.assertIn("UPGRADING.md", content)
 
+    def test_readmes_and_skill_document_internationalization_contract(self) -> None:
+        for name in ("README.md", "README.zh-CN.md"):
+            content = read(name)
+            self.assertIn("internationalization.md", content)
+            self.assertIn("locales/", content)
+            self.assertIn("F_DESIGN_LOCALE", content)
+        skill = read("SKILL.md")
+        self.assertIn("references/internationalization.md", skill)
+        self.assertIn("--locale en|zh-CN", skill)
+        self.assertTrue((ROOT / "SKILL.zh-CN.md").is_file())
+        for name in (
+            "CHANGELOG.zh-CN.md",
+            "COMPATIBILITY.zh-CN.md",
+            "RELEASE_NOTES.zh-CN.md",
+            "UPGRADING.zh-CN.md",
+            "references/internationalization.zh-CN.md",
+        ):
+            self.assertTrue((ROOT / name).is_file(), name)
+
 
 if __name__ == "__main__":
     unittest.main()

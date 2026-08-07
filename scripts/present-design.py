@@ -15,6 +15,11 @@ import urllib.request
 import webbrowser
 from urllib.parse import quote, unquote, urlsplit
 
+try:
+    from i18n import add_locale_argument, resolve_locale, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, resolve_locale, t
+
 
 DEFAULT_STATE = pathlib.Path(".codex/design/presentation.json")
 REMOTE_ENV_MARKERS = (
@@ -33,7 +38,7 @@ def add_browser_option(parser: argparse.ArgumentParser) -> None:
         "--browser",
         choices=("auto", "always", "never"),
         default="auto",
-        help="Browser behavior; auto skips remote or headless environments",
+        help=t("Browser behavior; auto skips remote or headless environments"),
     )
 
 
@@ -41,7 +46,7 @@ def add_state_option(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--state",
         default=str(DEFAULT_STATE),
-        help="Presentation state file",
+        help=t("Presentation state file"),
     )
 
 
@@ -61,37 +66,43 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     if argv and argv[0] not in commands and not argv[0].startswith("-"):
         argv = ["open", *argv]
 
+    locale = resolve_locale(argv)
     parser = argparse.ArgumentParser(
-        description="Present local HTML design artifacts for user review."
+        description=t("Present local HTML design artifacts for user review.", locale)
     )
+    add_locale_argument(parser)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     open_parser = subparsers.add_parser(
         "open",
-        help="Open standalone HTML files and return immediately",
+        help=t("Open standalone HTML files and return immediately", locale),
     )
-    open_parser.add_argument("targets", nargs="+", help="HTML artifact paths")
+    add_locale_argument(open_parser, suppress_default=True)
+    open_parser.add_argument("targets", nargs="+", help=t("HTML artifact paths", locale))
     add_browser_option(open_parser)
 
     serve_parser = subparsers.add_parser(
         "serve",
-        help="Start a managed background HTTP server",
+        help=t("Start a managed background HTTP server", locale),
     )
-    serve_parser.add_argument("targets", nargs="+", help="HTML artifact paths")
-    serve_parser.add_argument("--port", type=int, default=0, help="Port; 0 picks a free port")
+    add_locale_argument(serve_parser, suppress_default=True)
+    serve_parser.add_argument("targets", nargs="+", help=t("HTML artifact paths", locale))
+    serve_parser.add_argument("--port", type=int, default=0, help=t("Port; 0 picks a free port", locale))
     serve_parser.add_argument(
         "--open-wait",
         type=float,
         default=5.0,
-        help="Seconds to wait for browser requests",
+        help=t("Seconds to wait for browser requests", locale),
     )
     add_browser_option(serve_parser)
     add_state_option(serve_parser)
 
-    status_parser = subparsers.add_parser("status", help="Show server status")
+    status_parser = subparsers.add_parser("status", help=t("Show server status", locale))
+    add_locale_argument(status_parser, suppress_default=True)
     add_state_option(status_parser)
 
-    stop_parser = subparsers.add_parser("stop", help="Stop the background server")
+    stop_parser = subparsers.add_parser("stop", help=t("Stop the background server", locale))
+    add_locale_argument(stop_parser, suppress_default=True)
     add_state_option(stop_parser)
 
     return parser.parse_args(argv)
@@ -190,20 +201,20 @@ def state_is_active(path: pathlib.Path) -> bool:
     return True
 
 
-def print_artifacts(targets: list[pathlib.Path], urls: list[str]) -> None:
+def print_artifacts(targets: list[pathlib.Path], urls: list[str], locale: str) -> None:
     for target, url in zip(targets, urls):
-        print(f"Artifact: {target}")
-        print(f"Review URL: {url}")
+        print(f"{t('Artifact', locale)}: {target}")
+        print(f"{t('Review URL', locale)}: {url}")
 
 
 def command_open(args: argparse.Namespace) -> int:
     targets = resolve_targets(args.targets)
     urls = [target.as_uri() for target in targets]
-    print_artifacts(targets, urls)
+    print_artifacts(targets, urls, args.locale)
     opened, message = open_urls(urls, args.browser)
-    print(f"Browser: {message}")
+    print(f"{t('Browser', args.locale)}: {message}")
     if not opened:
-        print("Fallback: attach screenshots or provide a host-accessible artifact link.")
+        print(t("Fallback: attach screenshots or provide a host-accessible artifact link.", args.locale))
     return 0
 
 
@@ -315,18 +326,18 @@ def command_serve(args: argparse.Namespace) -> int:
         raise SystemExit(f"Failed to start presentation server: {exc}. Log: {log_path}")
 
     urls = state["urls"]
-    print_artifacts(targets, urls)
-    print(f"State: {state_path}")
-    print(f"Log: {log_path}")
+    print_artifacts(targets, urls, args.locale)
+    print(f"{t('State', args.locale)}: {state_path}")
+    print(f"{t('Log', args.locale)}: {log_path}")
     opened, message = open_urls(urls, args.browser)
     if opened:
         requested = wait_for_browser_requests(state, set(names), args.open_wait)
         message = "all artifact pages requested" if requested else f"{message}; requests not observed"
-    print(f"Browser: {message}")
+    print(f"{t('Browser', args.locale)}: {message}")
     if not opened:
-        print("Fallback: loopback URLs are agent-local unless the host exposes them.")
-        print("Fallback: attach screenshots or provide a host-accessible artifact link.")
-    print("Server: running in background")
+        print(t("Fallback: loopback URLs are agent-local unless the host exposes them.", args.locale))
+        print(t("Fallback: attach screenshots or provide a host-accessible artifact link.", args.locale))
+    print(t("Server: running in background", args.locale))
     return 0
 
 
@@ -336,14 +347,14 @@ def command_status(args: argparse.Namespace) -> int:
         state = load_state(state_path)
         status = query_server(state)
     except (RuntimeError, OSError, urllib.error.URLError, KeyError, ValueError) as exc:
-        print(f"Server: not reachable ({exc})")
+        print(t("Server: not reachable ({error})", args.locale, error=exc))
         return 1
 
-    print("Server: running")
+    print(t("Server: running", args.locale))
     print(f"PID: {state.get('pid')}")
-    print(f"State: {state_path}")
+    print(f"{t('State', args.locale)}: {state_path}")
     for url in state.get("urls", []):
-        print(f"Review URL: {url}")
+        print(f"{t('Review URL', args.locale)}: {url}")
     for name in status.get("requested", []):
         print(f"Requested: {name}")
     return 0
@@ -352,17 +363,17 @@ def command_status(args: argparse.Namespace) -> int:
 def command_stop(args: argparse.Namespace) -> int:
     state_path = pathlib.Path(args.state).expanduser().resolve()
     if not state_path.exists():
-        print(f"Server: no active state at {state_path}")
+        print(t("Server: no active state at {path}", args.locale, path=state_path))
         return 0
 
     try:
         state = load_state(state_path)
         request_json(control_url(state, "stop"), state["token"])
     except urllib.error.HTTPError as exc:
-        print(f"Server: stop rejected with HTTP {exc.code}; state preserved")
+        print(t("Server: stop rejected with HTTP {code}; state preserved", args.locale, code=exc.code))
         return 1
     except (RuntimeError, OSError, urllib.error.URLError, KeyError, ValueError) as exc:
-        print(f"Server: not reachable; removing stale state ({exc})")
+        print(t("Server: not reachable; removing stale state ({error})", args.locale, error=exc))
         state_path.unlink(missing_ok=True)
         return 0
 
@@ -370,9 +381,9 @@ def command_stop(args: argparse.Namespace) -> int:
     while state_path.exists() and time.monotonic() < deadline:
         time.sleep(0.05)
     if state_path.exists():
-        print(f"Server: stop requested but state remains at {state_path}")
+        print(t("Server: stop requested but state remains at {path}", args.locale, path=state_path))
         return 1
-    print("Server: stopped")
+    print(t("Server: stopped", args.locale))
     return 0
 
 

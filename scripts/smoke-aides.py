@@ -10,6 +10,11 @@ import shutil
 import subprocess
 import sys
 
+try:
+    from i18n import add_locale_argument, t
+except ModuleNotFoundError:  # Imported by the repository test suite.
+    from scripts.i18n import add_locale_argument, t
+
 
 PROMPT = (
     "使用已安装的 f-design。只进入导航模式，不修改任何文件。读取 f-design.json 后，"
@@ -75,8 +80,9 @@ def run_smoke(aide: str, command: list[str], workspace: pathlib.Path, version: s
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run explicit provider-backed f-design invocation tests. May consume model quota."
+        description=t("Run explicit provider-backed f-design invocation tests. May consume model quota.")
     )
+    add_locale_argument(parser)
     parser.add_argument("--aide", action="append", choices=("codex", "claude", "qwen", "cursor"), required=True)
     parser.add_argument("--workspace", default="/tmp")
     parser.add_argument("--timeout", type=int, default=120)
@@ -84,13 +90,13 @@ def main() -> int:
     parser.add_argument("--yes-consume-provider-quota", action="store_true")
     args = parser.parse_args()
     if not args.yes_consume_provider_quota:
-        print("Refusing provider calls without --yes-consume-provider-quota", file=sys.stderr)
+        print(t("Refusing provider calls without --yes-consume-provider-quota", args.locale), file=sys.stderr)
         return 2
     root = pathlib.Path(__file__).resolve().parents[1]
     try:
         version = release_version(root)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        print(f"Release version check failed: {exc}", file=sys.stderr)
+        print(t("Release version check failed: {error}", args.locale, error=exc), file=sys.stderr)
         return 2
     workspace = pathlib.Path(args.workspace).resolve()
     available = commands(workspace)

@@ -4,6 +4,11 @@ import json
 import pathlib
 import sys
 
+try:
+    from i18n import add_locale_argument, resolve_locale, t
+except ModuleNotFoundError:  # Imported by verify-ui and the test suite.
+    from scripts.i18n import add_locale_argument, resolve_locale, t
+
 
 SCHEMA_VERSION = "1.0"
 DEFAULT_SCHEMA = pathlib.Path(__file__).resolve().parents[1] / "references" / "design-contract.schema.json"
@@ -293,7 +298,7 @@ def validate_contract(
 def command_init(args: argparse.Namespace) -> int:
     output = pathlib.Path(args.out).expanduser().resolve()
     if output.exists() and not args.force:
-        print(f"Refusing to overwrite existing contract: {output}", file=sys.stderr)
+        print(t("Refusing to overwrite existing contract: {output}", args.locale, output=output), file=sys.stderr)
         return 1
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(contract_template(), indent=2) + "\n", encoding="utf-8")
@@ -313,26 +318,30 @@ def command_validate(args: argparse.Namespace) -> int:
             require_approved=args.require_approved,
         )
     except ValueError as exc:
-        print(f"design-contract failed: {exc}", file=sys.stderr)
+        print(t("design-contract failed: {error}", args.locale, error=exc), file=sys.stderr)
         return 1
     if errors:
-        print(f"Contract: invalid ({engine})")
+        print(t("Contract: invalid ({engine})", args.locale, engine=engine))
         for error in errors:
             print(f"- {error}")
         return 1
-    print(f"Contract: valid ({engine})")
+    print(t("Contract: valid ({engine})", args.locale, engine=engine))
     return 0
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Initialize and validate f-design implementation contracts.")
+    locale = resolve_locale(argv)
+    parser = argparse.ArgumentParser(description=t("Initialize and validate f-design implementation contracts.", locale))
+    add_locale_argument(parser)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    init_parser = subparsers.add_parser("init", help="Create a draft contract")
+    init_parser = subparsers.add_parser("init", help=t("Create a draft contract", locale))
+    add_locale_argument(init_parser, suppress_default=True)
     init_parser.add_argument("--out", default=".codex/f-design/design-contract.json")
     init_parser.add_argument("--force", action="store_true")
     init_parser.set_defaults(handler=command_init)
 
-    validate_parser = subparsers.add_parser("validate", help="Validate a contract")
+    validate_parser = subparsers.add_parser("validate", help=t("Validate a contract", locale))
+    add_locale_argument(validate_parser, suppress_default=True)
     validate_parser.add_argument("contract")
     validate_parser.add_argument("--project-root", default=".")
     validate_parser.add_argument("--schema", default=str(DEFAULT_SCHEMA))
