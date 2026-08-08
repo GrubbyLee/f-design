@@ -3,7 +3,7 @@ name: design-guide
 description: Frontend design and production engineering orchestrator that inventories projects, scales design depth, presents review artifacts, locks executable contracts, implements accessible responsive interfaces, and verifies interactions, visual regressions, and performance. Use when the user invokes design-guide, @design-guide, /design-guide, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, production frontend quality, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
 ---
 
-# F Design
+# Design Guide
 
 Use this as the frontend entry skill. It is not a single visual style; it controls product thinking, approval, implementation, and production verification.
 
