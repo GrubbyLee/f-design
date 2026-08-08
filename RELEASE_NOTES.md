@@ -1,3 +1,22 @@
+# design-guide v0.1.2
+
+`v0.1.2` is a naming-consistency patch release that aligns the display name, configuration directory, and all documentation with the `design-guide` rebrand.
+
+## What Changed
+
+- **Display name**: "F Design" → "Design Guide" in SKILL.md title (fixes ClawHub skill card name).
+- **Config directory**: `.design-guide/` is now the only project preference path across all references.
+- **Manifest**: `design-guide.json` version bumped to `0.1.2`.
+
+## Upgrade
+
+```bash
+git pull --ff-only
+bash scripts/sync-aide.sh
+python3 scripts/design-guide-doctor.py --strict
+```
+
+
 # design-guide v0.1.1
 
 `v0.1.1` is a patch release for the frontend design and production engineering orchestrator.

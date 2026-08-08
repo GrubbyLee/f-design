@@ -4,6 +4,13 @@ All notable changes to `design-guide` are documented here. The project follows S
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-09
+
+### Changed
+
+- Skill display name renamed from "F Design" to "Design Guide" for clarity.
+- Configuration directory consistently uses `.design-guide/` across all references.
+
 ### Added
 
 - Locale contract and message catalogs for `en` and `zh-CN`.
