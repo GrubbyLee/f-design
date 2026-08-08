@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/GrubbyLee/f-design/references/design-contract.schema.json",
-  "title": "f-design implementation contract",
+  "$id": "https://github.com/GrubbyLee/design-guide/references/design-contract.schema.json",
+  "title": "design-guide implementation contract",
   "type": "object",
   "additionalProperties": false,
   "required": [

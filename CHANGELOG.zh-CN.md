@@ -1,6 +1,6 @@
 # 更新日志
 
-这里记录 `f-design` 的重要变更，版本号遵循语义化版本规范。
+这里记录 `design-guide` 的重要变更，版本号遵循语义化版本规范。
 
 ## [Unreleased]
 
@@ -16,7 +16,7 @@
 
 - Gitee 标签同步不再强制更新镜像的 `main` 分支。
 - 密钥扫描覆盖 README、工作流和测试文件，并支持从非 Git 源目录运行。
-- `f-design-doctor.py` 会拒绝 `VERSION` 与 `f-design.json` 不一致的情况。
+- `design-guide-doctor.py` 会拒绝 `VERSION` 与 `design-guide.json` 不一致的情况。
 - 提供方冒烟测试会在发布版本源不一致时拒绝执行。
 
 ## [0.1.0] - 2026-08-07

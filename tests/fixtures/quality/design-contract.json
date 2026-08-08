@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "contractStatus": "approved",
   "productRole": "Browser quality fixture",
-  "audience": "f-design maintainers",
+  "audience": "design-guide maintainers",
   "primaryFlow": ["open fixture", "inspect state", "continue with keyboard"],
   "breakpoints": [390, 1024, 1440],
   "requiredStates": ["loading", "empty", "error", "success"],

@@ -30,7 +30,7 @@ jobs:
           GITEE_USERNAME: ${{ secrets.GITEE_USERNAME }}
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
-          git remote add gitee "https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/synovation/f-design.git"
+          git remote add gitee "https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/synovation/design-guide.git"
           if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "main" ]]; then
             git push gitee HEAD:refs/heads/main --force
           elif [[ "$GITHUB_REF_TYPE" == "tag" ]]; then

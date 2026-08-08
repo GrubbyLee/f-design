@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 *.tmp
 .codex/
-.f-design/profile.md
+.design-guide/profile.md
 .env
 .env.*
 !.env.example

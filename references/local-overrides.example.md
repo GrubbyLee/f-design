@@ -1,6 +1,6 @@
 # Local Overrides Example
 
-Copy this to `~/.f-design/preferences.md` for machine-local preferences. Do not commit personal preferences to a public skill repository.
+Copy this to `~/.design-guide/preferences.md` for machine-local preferences. Do not commit personal preferences to a public skill repository.
 
 ```text
 Default language: en or zh-CN

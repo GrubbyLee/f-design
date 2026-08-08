@@ -9,7 +9,7 @@ Compatibility claims are reported at three separate levels:
 | Qwen Code 0.15.3 | Yes | Yes | Blocked by provider: HTTP 403 model access denied | 2026-08-07 |
 | Cursor 3.2.21 | Yes | Yes | Blocked locally: Cursor Agent authentication required | 2026-08-07 |
 
-“Blocked” is not treated as an `f-design` failure because the installed public digest is identical and the provider request did not reach skill execution. Re-run the explicit smoke test after fixing provider access:
+“Blocked” is not treated as an `design-guide` failure because the installed public digest is identical and the provider request did not reach skill execution. Re-run the explicit smoke test after fixing provider access:
 
 ```bash
 python3 scripts/smoke-aides.py \

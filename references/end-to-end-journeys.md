@@ -1,6 +1,6 @@
 # End-To-End Product Journeys
 
-These journeys are the minimum release-level acceptance suite for `f-design`. They validate product behavior across design approval, existing-product improvement, and local AIDE distribution. Run them with:
+These journeys are the minimum release-level acceptance suite for `design-guide`. They validate product behavior across design approval, existing-product improvement, and local AIDE distribution. Run them with:
 
 ```bash
 python3 scripts/verify-product-journeys.py
@@ -11,7 +11,7 @@ python3 scripts/verify-product-journeys.py
 User goal:
 
 ```text
-Use f-design to design and build a stateful product workbench.
+Use design-guide to design and build a stateful product workbench.
 ```
 
 Required evidence:
@@ -58,7 +58,7 @@ Automated fixtures:
 User goal:
 
 ```text
-Use the same f-design behavior in Codex, Claude Code, Cursor, and Qwen Code.
+Use the same design-guide behavior in Codex, Claude Code, Cursor, and Qwen Code.
 ```
 
 Required evidence:
@@ -66,14 +66,14 @@ Required evidence:
 1. `sync-aide.sh` copies the public skill into all four supported locations.
 2. Generated/private files and project preferences are excluded.
 3. The post-sync public digest matches the source in every target.
-4. `f-design-doctor.py --strict` reports the same version and required files everywhere.
+4. `design-guide-doctor.py --strict` reports the same version and required files everywhere.
 5. “Installed”, “synchronized”, and “invoked” remain separate claims; real provider calls are optional and require authorization.
 
 Automated fixtures:
 
 - `tests/test_support_scripts.py`
 - `tests/test_release_tooling.py`
-- `scripts/f-design-doctor.py`
+- `scripts/design-guide-doctor.py`
 
 ## Release Gate
 

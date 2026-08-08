@@ -8,7 +8,7 @@ Initialize a contract inside the target project:
 
 ```bash
 python3 <skill-dir>/scripts/design-contract.py init \
-  --out .codex/f-design/design-contract.json
+  --out .codex/design-guide/design-contract.json
 ```
 
 Replace every placeholder with the approved product decisions. Define concrete flow starts and stable selectors. Prefer role, label, or `data-testid` selectors over layout-dependent CSS selectors.
@@ -23,7 +23,7 @@ Validate before implementation:
 
 ```bash
 python3 <skill-dir>/scripts/design-contract.py validate \
-  .codex/f-design/design-contract.json \
+  .codex/design-guide/design-contract.json \
   --project-root . \
   --require-approved
 ```

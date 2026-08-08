@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Diagnose f-design versions, required files, and local AIDE synchronization."""
+"""Diagnose design-guide versions, required files, and local AIDE synchronization."""
 
 from __future__ import annotations
 
@@ -23,10 +23,10 @@ EXCLUDED_PARTS = {".git", ".github", ".codex", "promo", "__pycache__"}
 EXCLUDED_NAMES = {".DS_Store"}
 EXCLUDED_SUFFIXES = {".pyc", ".tmp"}
 AIDE_PATHS = {
-    "codex": pathlib.Path(".codex/skills/f-design"),
-    "claude": pathlib.Path(".claude/skills/f-design"),
-    "cursor": pathlib.Path(".cursor/skills/f-design"),
-    "qwen": pathlib.Path(".qwen/skills/f-design"),
+    "codex": pathlib.Path(".codex/skills/design-guide"),
+    "claude": pathlib.Path(".claude/skills/design-guide"),
+    "cursor": pathlib.Path(".cursor/skills/design-guide"),
+    "qwen": pathlib.Path(".qwen/skills/design-guide"),
 }
 
 
@@ -42,7 +42,7 @@ class TargetResult:
 
 
 def load_manifest(root: pathlib.Path) -> dict:
-    path = root / "f-design.json"
+    path = root / "design-guide.json"
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -73,7 +73,7 @@ def included_files(root: pathlib.Path) -> list[pathlib.Path]:
         relative = path.relative_to(root)
         if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue
-        if relative.as_posix() == ".f-design/profile.md":
+        if relative.as_posix() == ".design-guide/profile.md":
             continue
         if path.name in EXCLUDED_NAMES or path.suffix in EXCLUDED_SUFFIXES:
             continue
@@ -146,7 +146,7 @@ def report(source: pathlib.Path, target_home: pathlib.Path) -> dict:
 
 
 def print_human(data: dict, locale: str) -> None:
-    print(f"f-design {data['version']}")
+    print(f"design-guide {data['version']}")
     print(f"{t('Source', locale)}: {data['source']}")
     consistency = t("consistent", locale) if data["versionConsistent"] else t("MISMATCH", locale)
     print(f"{t('Version file', locale)}: {data['versionFile']} ({consistency})")
@@ -173,7 +173,7 @@ def print_human(data: dict, locale: str) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=t("Check f-design version and local AIDE synchronization."))
+    parser = argparse.ArgumentParser(description=t("Check design-guide version and local AIDE synchronization."))
     add_locale_argument(parser)
     parser.add_argument("--source", default=str(pathlib.Path(__file__).resolve().parents[1]))
     parser.add_argument("--target-home", default=os.environ.get("F_DESIGN_TARGET_HOME", str(pathlib.Path.home())))

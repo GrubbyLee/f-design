@@ -1,6 +1,6 @@
 # Project Profile Example
 
-Copy this to `.f-design/profile.md` inside a project when the project needs stable frontend direction.
+Copy this to `.design-guide/profile.md` inside a project when the project needs stable frontend direction.
 
 ```text
 Product type:

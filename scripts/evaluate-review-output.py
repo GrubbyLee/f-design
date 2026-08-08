@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate a captured f-design review response against an explicit scope contract."""
+"""Evaluate a captured design-guide review response against an explicit scope contract."""
 
 from __future__ import annotations
 

@@ -8,7 +8,7 @@ Use this registry to recommend or select helper skills/tools. Only name helpers 
 - `design-taste-frontend`: correct generic AI-looking landing pages, portfolios, and redesigns.
 - `web-design-guidelines`: audit UI, UX, accessibility, and web-interface best practices.
 - `webapp-testing`: browser-based testing and screenshot QA when available.
-- Product design reviews use `f-design` as the primary evaluator. Use `web-design-guidelines` for accessibility and UX critique, `webapp-testing` for screenshot/interaction evidence, and `design-taste-frontend` only for marketing-page, portfolio, or redesign taste signals that fit the artifact.
+- Product design reviews use `design-guide` as the primary evaluator. Use `web-design-guidelines` for accessibility and UX critique, `webapp-testing` for screenshot/interaction evidence, and `design-taste-frontend` only for marketing-page, portfolio, or redesign taste signals that fit the artifact.
 
 ## Motion
 
@@ -42,9 +42,9 @@ Use this registry to recommend or select helper skills/tools. Only name helpers 
 
 Prefer fewer helpers. Pick the smallest set that covers the task:
 
-- New app screen: `f-design` plus local framework/CSS, optionally `web-design-engineer`.
-- Existing UI improvement: `f-design` plus `design-taste-frontend` or `web-design-guidelines`.
-- Existing product/page design evaluation: `f-design` plus `web-design-guidelines` for critique depth, `webapp-testing` for screenshot/interaction evidence, and `design-taste-frontend` only when landing-page or visual taste heuristics apply.
-- Animation: `f-design` plus one motion helper.
-- 3D: `f-design` plus `three`.
-- Screenshot recreation: `f-design` plus one screenshot-to-code helper.
+- New app screen: `design-guide` plus local framework/CSS, optionally `web-design-engineer`.
+- Existing UI improvement: `design-guide` plus `design-taste-frontend` or `web-design-guidelines`.
+- Existing product/page design evaluation: `design-guide` plus `web-design-guidelines` for critique depth, `webapp-testing` for screenshot/interaction evidence, and `design-taste-frontend` only when landing-page or visual taste heuristics apply.
+- Animation: `design-guide` plus one motion helper.
+- 3D: `design-guide` plus `three`.
+- Screenshot recreation: `design-guide` plus one screenshot-to-code helper.

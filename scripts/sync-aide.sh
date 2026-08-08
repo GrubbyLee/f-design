@@ -39,12 +39,12 @@ msg() {
   fi
 }
 TARGETS=(
-  "${TARGET_HOME}/.codex/skills/f-design"
-  "${TARGET_HOME}/.claude/skills/f-design"
-  "${TARGET_HOME}/.cursor/skills/f-design"
-  "${TARGET_HOME}/.qwen/skills/f-design"
+  "${TARGET_HOME}/.codex/skills/design-guide"
+  "${TARGET_HOME}/.claude/skills/design-guide"
+  "${TARGET_HOME}/.cursor/skills/design-guide"
+  "${TARGET_HOME}/.qwen/skills/design-guide"
 )
-DOCTOR="$SRC_REAL/scripts/f-design-doctor.py"
+DOCTOR="$SRC_REAL/scripts/design-guide-doctor.py"
 
 if [[ ! -f "$SRC_REAL/SKILL.md" ]]; then
   msg missing-source >&2
@@ -76,7 +76,7 @@ for target in "${TARGETS[@]}"; do
     --exclude='.github/' \
     --exclude='.codex/' \
     --exclude='promo/' \
-    --exclude='.f-design/profile.md' \
+    --exclude='.design-guide/profile.md' \
     --exclude='__pycache__/' \
     --exclude='*.pyc' \
     --exclude='.DS_Store' \

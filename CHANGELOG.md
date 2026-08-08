@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `f-design` are documented here. The project follows Semantic Versioning from `v0.1.0` onward.
+All notable changes to `design-guide` are documented here. The project follows Semantic Versioning from `v0.1.0` onward.
 
 ## [Unreleased]
 
@@ -16,7 +16,7 @@ All notable changes to `f-design` are documented here. The project follows Seman
 
 - Gitee tag synchronization no longer force-updates the mirror's `main` branch.
 - Secret scanning checks README, workflow, and test files instead of skipping whole files, and works from non-Git source directories.
-- `f-design-doctor.py` rejects drift between `VERSION` and `f-design.json`.
+- `design-guide-doctor.py` rejects drift between `VERSION` and `design-guide.json`.
 - Provider smoke tests refuse to run when release version sources disagree.
 
 ## [0.1.0] - 2026-08-07
@@ -31,7 +31,7 @@ All notable changes to `f-design` are documented here. The project follows Seman
 - Scope Gate rules that prevent unrequested mobile, accessibility, implementation, redesign, or publishing work and forbid inherited side goals.
 - Behavior-level review fixtures for the historical mobile/WeChat context-leak regression.
 - Specialized review templates for data tables, dashboards, complex forms, mobile navigation, and high-risk batch operations.
-- Cross-AIDE version manifest, digest-based synchronization, and `f-design-doctor.py` for Codex, Claude Code, Cursor, and Qwen Code.
+- Cross-AIDE version manifest, digest-based synchronization, and `design-guide-doctor.py` for Codex, Claude Code, Cursor, and Qwen Code.
 - Three deterministic end-to-end product journey checks.
 - Depth Stack visual identity and bilingual documentation.
 

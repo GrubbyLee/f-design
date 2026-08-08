@@ -1,6 +1,6 @@
 # 国际化契约
 
-f-design 将 AIDE 使用的指令语言与命令行辅助工具的显示语言分开处理。
+design-guide 将 AIDE 使用的指令语言与命令行辅助工具的显示语言分开处理。
 
 ## 支持的语言
 
@@ -38,7 +38,7 @@ Shell 同步器支持相同的环境变量，也支持 `bash scripts/sync-aide.s
 ```bash
 python3 -m unittest discover -s tests -q
 python3 scripts/present-design.py --locale zh-CN --help
-F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+F_DESIGN_LOCALE=zh-CN python3 scripts/design-guide-doctor.py
 ```
 
 不要把依赖语言的文本用作契约标识、fixture key、JSON 字段名、路由、选择器或文件路径。

@@ -1,15 +1,15 @@
 ---
-name: f-design
+name: design-guide
 description: 面向 Codex、Claude Code、Cursor、Qwen Code 等 AIDE 的前端设计与生产工程总控 skill。英文版 SKILL.md 是规范源文件；本文件提供中文操作入口。
 ---
 
-# f-design（中文操作入口）
+# design-guide（中文操作入口）
 
 `SKILL.md` 是规范源文件。本文件用于中文用户快速理解和使用；涉及规则细节时，以英文规范与 `references/` 为准，避免中英文行为分叉。
 
 ## 何时使用
 
-当用户要求前端设计、页面开发、后台工作台、仪表盘、重设计、截图还原、响应式 UI、动效、3D、截图 QA，或评价已有页面的优缺点和改进方案时，使用 `f-design`。
+当用户要求前端设计、页面开发、后台工作台、仪表盘、重设计、截图还原、响应式 UI、动效、3D、截图 QA，或评价已有页面的优缺点和改进方案时，使用 `design-guide`。
 
 没有具体任务时进入导航模式：列出当前环境可执行的前端任务和可用辅助 skill，不写代码。
 
@@ -46,7 +46,7 @@ CLI 支持 `en` 与 `zh-CN`：
 
 ```bash
 python3 scripts/present-design.py --locale zh-CN --help
-F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+F_DESIGN_LOCALE=zh-CN python3 scripts/design-guide-doctor.py
 ```
 
 语言优先级为显式 `--locale`、`F_DESIGN_LOCALE`、`LC_ALL`、`LANG`、英文回退。JSON 字段和机器值始终保持英文稳定。

@@ -29,8 +29,8 @@ jobs:
           missing = [item for item in required if item not in frontmatter]
           if missing:
               raise SystemExit(f"Missing frontmatter fields: {', '.join(missing)}")
-          if "name: f-design" not in frontmatter:
-              raise SystemExit("Expected skill name: f-design")
+          if "name: design-guide" not in frontmatter:
+              raise SystemExit("Expected skill name: design-guide")
           print("SKILL.md frontmatter OK")
           PY
 
@@ -48,7 +48,7 @@ jobs:
           python3 scripts/run-preview.py --help >/dev/null
           python3 scripts/visual-diff.py --help >/dev/null
           python3 scripts/verify-ui.py --help >/dev/null
-          python3 scripts/f-design-doctor.py --help >/dev/null
+          python3 scripts/design-guide-doctor.py --help >/dev/null
           python3 scripts/evaluate-review-output.py --help >/dev/null
           python3 scripts/design-contract.py validate \
             tests/fixtures/quality/design-contract.json \
@@ -107,7 +107,7 @@ jobs:
           python3 scripts/verify-ui.py http://127.0.0.1:4173/tests/fixtures/quality/ \
             --contract tests/fixtures/quality/design-contract.json \
             --project-root . \
-            --out .codex/f-design/verification
+            --out .codex/design-guide/verification
 
       - name: Stop quality fixture preview
         if: always()
@@ -118,8 +118,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: f-design-browser-quality
+          name: design-guide-browser-quality
           path: |
-            .codex/f-design/verification
-            .codex/f-design/preview.log
+            .codex/design-guide/verification
+            .codex/design-guide/preview.log
           if-no-files-found: warn

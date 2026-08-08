@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-DOCTOR = ROOT / "scripts" / "f-design-doctor.py"
+DOCTOR = ROOT / "scripts" / "design-guide-doctor.py"
 SECRET_SCAN = ROOT / "scripts" / "check-secrets.py"
 JOURNEYS = ROOT / "scripts" / "verify-product-journeys.py"
 SMOKE = ROOT / "scripts" / "smoke-aides.py"
@@ -32,7 +32,7 @@ def load_module(name: str, path: pathlib.Path):
 class VersionManifestTest(unittest.TestCase):
     def test_version_sources_and_release_notes_agree(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-        manifest = json.loads((ROOT / "f-design.json").read_text(encoding="utf-8"))
+        manifest = json.loads((ROOT / "design-guide.json").read_text(encoding="utf-8"))
         self.assertEqual(version, manifest["version"])
         self.assertIn(f"## [{version}]", (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"))
         self.assertIn(f"v{version}", (ROOT / "RELEASE_NOTES.md").read_text(encoding="utf-8"))

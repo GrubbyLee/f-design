@@ -99,7 +99,7 @@ class ProductDesignReviewDocumentationTest(unittest.TestCase):
     def test_helper_registry_lists_optional_evidence_helpers_for_design_review(self) -> None:
         registry = read("references/helper-registry.md")
 
-        self.assertIn("Product design reviews use `f-design`", registry)
+        self.assertIn("Product design reviews use `design-guide`", registry)
         self.assertIn("Existing product/page design evaluation", registry)
         self.assertIn("web-design-guidelines", registry)
         self.assertIn("webapp-testing", registry)
@@ -173,7 +173,7 @@ class ProductDesignReviewDocumentationTest(unittest.TestCase):
     def test_readmes_document_version_doctor_and_product_journeys(self) -> None:
         for name in ("README.md", "README.zh-CN.md"):
             content = read(name)
-            self.assertIn("f-design-doctor.py --strict", content)
+            self.assertIn("design-guide-doctor.py --strict", content)
             self.assertIn("verify-product-journeys.py", content)
             self.assertIn("evaluate-review-output.py", content)
             self.assertIn("CHANGELOG.md", content)

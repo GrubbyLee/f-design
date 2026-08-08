@@ -8,9 +8,9 @@ Run the application through an HTTP preview for release-quality checks:
 
 ```bash
 python3 <skill-dir>/scripts/verify-ui.py http://127.0.0.1:3000 \
-  --contract .codex/f-design/design-contract.json \
+  --contract .codex/design-guide/design-contract.json \
   --project-root . \
-  --out .codex/f-design/verification
+  --out .codex/design-guide/verification
 ```
 
 The verifier runs each declared flow at every contract breakpoint, captures screenshots, records console and page errors, checks horizontal overflow, runs accessibility checks when `axe-core` is available, compares visual baselines, records browser performance metrics, and optionally runs Lighthouse.

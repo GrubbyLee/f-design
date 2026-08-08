@@ -331,12 +331,12 @@ def command_validate(args: argparse.Namespace) -> int:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     locale = resolve_locale(argv)
-    parser = argparse.ArgumentParser(description=t("Initialize and validate f-design implementation contracts.", locale))
+    parser = argparse.ArgumentParser(description=t("Initialize and validate design-guide implementation contracts.", locale))
     add_locale_argument(parser)
     subparsers = parser.add_subparsers(dest="command", required=True)
     init_parser = subparsers.add_parser("init", help=t("Create a draft contract", locale))
     add_locale_argument(init_parser, suppress_default=True)
-    init_parser.add_argument("--out", default=".codex/f-design/design-contract.json")
+    init_parser.add_argument("--out", default=".codex/design-guide/design-contract.json")
     init_parser.add_argument("--force", action="store_true")
     init_parser.set_defaults(handler=command_init)
 

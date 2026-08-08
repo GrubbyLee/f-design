@@ -57,7 +57,7 @@ class I18nContractTest(unittest.TestCase):
         env = os.environ.copy()
         env["F_DESIGN_LOCALE"] = "zh-CN"
         result = subprocess.run(
-            [sys.executable, str(SCRIPTS / "f-design-doctor.py"), "--json", "--source", str(ROOT), "--target-home", "/tmp/f-design-i18n-test-home"],
+            [sys.executable, str(SCRIPTS / "design-guide-doctor.py"), "--json", "--source", str(ROOT), "--target-home", "/tmp/design-guide-i18n-test-home"],
             cwd=ROOT,
             env=env,
             capture_output=True,

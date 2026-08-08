@@ -45,7 +45,7 @@ def candidate_files(root: pathlib.Path) -> list[pathlib.Path]:
             continue
         if path.name in EXCLUDED_NAMES or path.suffix in EXCLUDED_SUFFIXES:
             continue
-        if relative.as_posix() == ".f-design/profile.md":
+        if relative.as_posix() == ".design-guide/profile.md":
             continue
         files.append(path)
     return sorted(files)

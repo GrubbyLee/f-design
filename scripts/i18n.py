@@ -1,4 +1,4 @@
-"""Small, dependency-free locale and message helper for f-design CLIs."""
+"""Small, dependency-free locale and message helper for design-guide CLIs."""
 
 from __future__ import annotations
 

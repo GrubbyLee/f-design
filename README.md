@@ -1,23 +1,23 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/f-design-logo-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/f-design-logo-light.svg">
-    <img alt="f-design - Frontend Design Orchestration" src="assets/f-design-logo-light.svg" width="560">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/design-guide-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/design-guide-logo-light.svg">
+    <img alt="design-guide - Frontend Design Orchestration" src="assets/design-guide-logo-light.svg" width="560">
   </picture>
 </p>
 
-# f-design
+# design-guide
 
 English | [简体中文](README.zh-CN.md)
 
-[![Validate](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml)
-[![Sync to Gitee](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml)
-[![Release](https://img.shields.io/github/v/release/GrubbyLee/f-design)](https://github.com/GrubbyLee/f-design/releases)
+[![Validate](https://github.com/GrubbyLee/design-guide/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/design-guide/actions/workflows/validate.yml)
+[![Sync to Gitee](https://github.com/GrubbyLee/design-guide/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/design-guide/actions/workflows/sync-to-gitee.yml)
+[![Release](https://img.shields.io/github/v/release/GrubbyLee/design-guide)](https://github.com/GrubbyLee/design-guide/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > A frontend design orchestration skill for Codex, Claude Code, Cursor, Qwen Code, and other AI development environments.
 
-`f-design` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
+`design-guide` is not another UI style preset. It is a frontend design and production engineering control skill: it helps an AI coding agent understand a repository, choose and present a design direction, lock an executable contract, implement the UI, and verify behavior and quality before delivery.
 
 Current version: **v0.1.1**. See [AIDE compatibility](COMPATIBILITY.md) for separate installed, synchronized, and provider-invoked evidence. Chinese release notes are available in [中文兼容性](COMPATIBILITY.zh-CN.md).
 
@@ -49,70 +49,70 @@ Use it when you want fewer generic AI-looking interfaces and a more disciplined 
 Install for Codex:
 
 ```bash
-git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
+git clone https://github.com/GrubbyLee/design-guide.git ~/.codex/skills/design-guide
 ```
 
 Synchronize the same skill across Codex, Claude Code, Cursor, and Qwen Code local skill directories:
 
 ```bash
-bash ~/.codex/skills/f-design/scripts/sync-aide.sh
-python3 ~/.codex/skills/f-design/scripts/f-design-doctor.py --strict
+bash ~/.codex/skills/design-guide/scripts/sync-aide.sh
+python3 ~/.codex/skills/design-guide/scripts/design-guide-doctor.py --strict
 ```
 
-The target `f-design` directories are managed mirrors: stale files are removed, while `.git`, `.codex`, generated Python caches, and private `.f-design/profile.md` files are excluded.
+The target `design-guide` directories are managed mirrors: stale files are removed, while `.git`, `.codex`, generated Python caches, and private `.design-guide/profile.md` files are excluded.
 
-The sync script copies the current `f-design` folder to these managed targets. When the source already equals a target, that target is skipped.
+The sync script copies the current `design-guide` folder to these managed targets. When the source already equals a target, that target is skipped.
 
 ```text
-~/.codex/skills/f-design
-~/.claude/skills/f-design
-~/.cursor/skills/f-design
-~/.qwen/skills/f-design
+~/.codex/skills/design-guide
+~/.claude/skills/design-guide
+~/.cursor/skills/design-guide
+~/.qwen/skills/design-guide
 ```
 
 ## Invocation
 
-Different AIDE tools use different skill invocation syntax. The portable contract is simple: ask the agent to use `f-design`.
+Different AIDE tools use different skill invocation syntax. The portable contract is simple: ask the agent to use `design-guide`.
 
 | Environment | Suggested invocation |
 |---|---|
-| Codex | `use f-design`, `f-design`, `$f-design`, or `@f-design` when supported |
-| Claude Code | `/f-design` when installed as a Claude skill, or `use f-design` |
-| Cursor | `use f-design`, or point the agent at `SKILL.md` |
-| Qwen Code | `use f-design`, or point the agent at `SKILL.md` |
-| Other AIDE | Tell the agent to read `SKILL.md` and follow `f-design` |
+| Codex | `use design-guide`, `design-guide`, `$design-guide`, or `@design-guide` when supported |
+| Claude Code | `/design-guide` when installed as a Claude skill, or `use design-guide` |
+| Cursor | `use design-guide`, or point the agent at `SKILL.md` |
+| Qwen Code | `use design-guide`, or point the agent at `SKILL.md` |
+| Other AIDE | Tell the agent to read `SKILL.md` and follow `design-guide` |
 
 ## Mode 1: Navigation
 
 When you only type:
 
 ```text
-f-design
+design-guide
 ```
 
 the agent should not start coding. It should show a compact menu of frontend capabilities and helper skills, for example:
 
 ```text
-f-design is ready. Pick a frontend task:
+design-guide is ready. Pick a frontend task:
 
 1. Build a product screen / dashboard / tool
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-engineer, webapp-testing
 
 2. Improve visual taste of an existing page
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: design-taste-frontend, web-design-guidelines
 
 3. Evaluate an existing product/page design
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
 
 4. Add complex animation
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: gsap, animejs
 
 5. Build 3D / WebGL
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: three
 ```
 
@@ -121,13 +121,13 @@ f-design is ready. Pick a frontend task:
 When you provide a real task:
 
 ```text
-Use f-design to build a creator dashboard for reviewing generated media.
+Use design-guide to build a creator dashboard for reviewing generated media.
 ```
 
 You can also ask for a product design review:
 
 ```text
-Use f-design to evaluate this existing dashboard design and provide a prioritized improvement report.
+Use design-guide to evaluate this existing dashboard design and provide a prioritized improvement report.
 Input: <URL/screenshot/HTML/repo path>
 Output: scorecard, strengths, issues, actionable changes, acceptance criteria.
 ```
@@ -155,13 +155,13 @@ Confirmation is proportional, not automatic. Isolated fixes and clearly directed
 
 ## Preference Files
 
-`f-design` keeps open-source defaults separate from personal or project preferences.
+`design-guide` keeps open-source defaults separate from personal or project preferences.
 
 Lookup order:
 
 ```text
-1. .f-design/profile.md in the current project
-2. ~/.f-design/preferences.md on the local machine
+1. .design-guide/profile.md in the current project
+2. ~/.design-guide/preferences.md on the local machine
 3. references/design-defaults.md bundled with this skill
 ```
 
@@ -185,8 +185,8 @@ python3 scripts/inspect-project.py . --format markdown
 Create and validate an executable design contract:
 
 ```bash
-python3 scripts/design-contract.py init --out .codex/f-design/design-contract.json
-python3 scripts/design-contract.py validate .codex/f-design/design-contract.json --project-root . --require-approved
+python3 scripts/design-contract.py init --out .codex/design-guide/design-contract.json
+python3 scripts/design-contract.py validate .codex/design-guide/design-contract.json --project-root . --require-approved
 ```
 
 Start, inspect, and stop a real application preview:
@@ -201,7 +201,7 @@ Run contract-driven browser QA:
 
 ```bash
 python3 scripts/verify-ui.py http://127.0.0.1:3000 \
-  --contract .codex/f-design/design-contract.json --project-root .
+  --contract .codex/design-guide/design-contract.json --project-root .
 ```
 
 Compare a screenshot against a visual baseline:
@@ -247,7 +247,7 @@ bash scripts/sync-aide.sh
 Check versions and public-file digests across all supported AIDEs:
 
 ```bash
-python3 scripts/f-design-doctor.py --strict
+python3 scripts/design-guide-doctor.py --strict
 ```
 
 Run an explicit provider-backed invocation smoke test (may consume model quota):
@@ -266,7 +266,7 @@ Select CLI language explicitly or through `F_DESIGN_LOCALE`:
 
 ```bash
 python3 scripts/present-design.py --locale zh-CN --help
-F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+F_DESIGN_LOCALE=zh-CN python3 scripts/design-guide-doctor.py
 ```
 
 Evaluate a captured agent review against a scope contract:
@@ -284,7 +284,7 @@ python3 scripts/evaluate-review-output.py \
 ├── SKILL.md
 ├── SKILL.zh-CN.md
 ├── VERSION
-├── f-design.json
+├── design-guide.json
 ├── CHANGELOG.md
 ├── CHANGELOG.zh-CN.md
 ├── COMPATIBILITY.md
@@ -322,7 +322,7 @@ python3 scripts/evaluate-review-output.py \
 │   ├── design-contract.py
 │   ├── check-secrets.py
 │   ├── evaluate-review-output.py
-│   ├── f-design-doctor.py
+│   ├── design-guide-doctor.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
 │   ├── inspect-project.py
@@ -367,14 +367,14 @@ The GitHub `validate.yml` workflow also runs a strict browser-quality job agains
 
 ## Versioning And Releases
 
-The current release is declared in `VERSION` and `f-design.json`. See `CHANGELOG.md` ([中文](CHANGELOG.zh-CN.md)) for changes, `RELEASE_NOTES.md` ([中文](RELEASE_NOTES.zh-CN.md)) for the current release summary, and `UPGRADING.md` ([中文](UPGRADING.zh-CN.md)) for safe upgrade instructions. Provider-side AIDE invocation remains an explicit, separately reported check because it can consume external model quota.
+The current release is declared in `VERSION` and `design-guide.json`. See `CHANGELOG.md` ([中文](CHANGELOG.zh-CN.md)) for changes, `RELEASE_NOTES.md` ([中文](RELEASE_NOTES.zh-CN.md)) for the current release summary, and `UPGRADING.md` ([中文](UPGRADING.zh-CN.md)) for safe upgrade instructions. Provider-side AIDE invocation remains an explicit, separately reported check because it can consume external model quota.
 
 ## Gitee Mirror
 
 This repository is configured to sync `main` and tags to:
 
 ```text
-https://gitee.com/synovation/f-design
+https://gitee.com/synovation/design-guide
 ```
 
 The mirror workflow expects these GitHub repository secrets:

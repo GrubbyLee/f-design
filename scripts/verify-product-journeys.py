@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the deterministic acceptance checks for f-design's three product journeys."""
+"""Run the deterministic acceptance checks for design-guide's three product journeys."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ def run(label: str, command: list[str], env: dict[str, str] | None = None) -> tu
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=t("Run deterministic f-design product journey checks."))
+    parser = argparse.ArgumentParser(description=t("Run deterministic design-guide product journey checks."))
     add_locale_argument(parser)
     args = parser.parse_args()
     results: list[tuple[bool, str]] = []
@@ -88,7 +88,7 @@ def main() -> int:
             "Journey 3 doctor",
             [
                 sys.executable,
-                "scripts/f-design-doctor.py",
+                "scripts/design-guide-doctor.py",
                 "--source",
                 str(ROOT),
                 "--target-home",

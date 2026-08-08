@@ -18,7 +18,7 @@ except ModuleNotFoundError:  # Imported by the repository test suite.
     from scripts.i18n import add_locale_argument, resolve_locale, t
 
 
-DEFAULT_STATE = pathlib.Path(".codex/f-design/preview.json")
+DEFAULT_STATE = pathlib.Path(".codex/design-guide/preview.json")
 REMOTE_ENV_MARKERS = (
     "CI",
     "CODESPACES",
@@ -108,7 +108,7 @@ def load_state(path: pathlib.Path) -> dict:
 
 
 def health_check(url: str, timeout: float = 1.5) -> tuple[bool, str]:
-    request = urllib.request.Request(url, headers={"User-Agent": "f-design-preview/1.0"})
+    request = urllib.request.Request(url, headers={"User-Agent": "design-guide-preview/1.0"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return 200 <= response.status < 400, f"HTTP {response.status}"

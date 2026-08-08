@@ -17,17 +17,17 @@ except ModuleNotFoundError:  # Imported by the repository test suite.
 
 
 PROMPT = (
-    "使用已安装的 f-design。只进入导航模式，不修改任何文件。读取 f-design.json 后，"
+    "使用已安装的 design-guide。只进入导航模式，不修改任何文件。读取 design-guide.json 后，"
     "第一行严格输出 F_DESIGN_SMOKE version=<版本号>，随后只列出三项可选前端任务。"
 )
 
 
 def release_version(root: pathlib.Path) -> str:
-    manifest = json.loads((root / "f-design.json").read_text(encoding="utf-8"))
+    manifest = json.loads((root / "design-guide.json").read_text(encoding="utf-8"))
     manifest_version = manifest.get("version") if isinstance(manifest, dict) else None
     version_file = (root / "VERSION").read_text(encoding="utf-8").strip()
     if not isinstance(manifest_version, str) or not version_file or manifest_version != version_file:
-        raise ValueError("VERSION and f-design.json version must match before provider smoke tests")
+        raise ValueError("VERSION and design-guide.json version must match before provider smoke tests")
     return manifest_version
 
 
@@ -39,7 +39,7 @@ def commands(workspace: pathlib.Path) -> dict[str, list[str]]:
         ],
         "claude": [
             "claude", "-p", "--permission-mode", "plan", "--no-session-persistence",
-            "/f-design " + PROMPT,
+            "/design-guide " + PROMPT,
         ],
         "qwen": [
             "qwen", "--approval-mode", "plan", "--chat-recording", "false", "--output-format", "text", PROMPT,
@@ -80,7 +80,7 @@ def run_smoke(aide: str, command: list[str], workspace: pathlib.Path, version: s
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=t("Run explicit provider-backed f-design invocation tests. May consume model quota.")
+        description=t("Run explicit provider-backed design-guide invocation tests. May consume model quota.")
     )
     add_locale_argument(parser)
     parser.add_argument("--aide", action="append", choices=("codex", "claude", "qwen", "cursor"), required=True)

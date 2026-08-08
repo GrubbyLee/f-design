@@ -1,4 +1,4 @@
-# f-design v0.1.1
+# design-guide v0.1.1
 
 `v0.1.1` is a patch release for the frontend design and production engineering orchestrator.
 
@@ -30,7 +30,7 @@ It also adds a diagnostic workflow for existing product/page designs and closes 
 ```bash
 git pull --ff-only
 bash scripts/sync-aide.sh
-python3 scripts/f-design-doctor.py --strict
+python3 scripts/design-guide-doctor.py --strict
 ```
 
 Reload each AIDE after synchronization if it caches discovered skills.

@@ -103,13 +103,13 @@ class SyncAideTest(unittest.TestCase):
             for private_path in (
                 source / ".git" / "config",
                 source / ".codex" / "review.html",
-                source / ".f-design" / "profile.md",
+                source / ".design-guide" / "profile.md",
                 source / "__pycache__" / "cache.pyc",
             ):
                 private_path.parent.mkdir(parents=True, exist_ok=True)
                 private_path.write_text("private\n", encoding="utf-8")
 
-            stale_target = target_home / ".claude" / "skills" / "f-design"
+            stale_target = target_home / ".claude" / "skills" / "design-guide"
             stale_target.mkdir(parents=True)
             (stale_target / "stale.txt").write_text("stale\n", encoding="utf-8")
 
@@ -127,7 +127,7 @@ class SyncAideTest(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             for aide in (".codex", ".claude", ".cursor", ".qwen"):
-                target = target_home / aide / "skills" / "f-design"
+                target = target_home / aide / "skills" / "design-guide"
                 self.assertEqual(
                     (target / "SKILL.md").read_text(encoding="utf-8"),
                     "# Test Skill\n",
@@ -138,7 +138,7 @@ class SyncAideTest(unittest.TestCase):
                 )
                 self.assertFalse((target / ".git").exists())
                 self.assertFalse((target / ".codex").exists())
-                self.assertFalse((target / ".f-design" / "profile.md").exists())
+                self.assertFalse((target / ".design-guide" / "profile.md").exists())
                 self.assertFalse((target / "__pycache__").exists())
             self.assertFalse((stale_target / "stale.txt").exists())
 

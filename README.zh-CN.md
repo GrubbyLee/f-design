@@ -1,23 +1,23 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/f-design-logo-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/f-design-logo-light.svg">
-    <img alt="f-design - 前端设计总控" src="assets/f-design-logo-light.svg" width="560">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/design-guide-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/design-guide-logo-light.svg">
+    <img alt="design-guide - 前端设计总控" src="assets/design-guide-logo-light.svg" width="560">
   </picture>
 </p>
 
-# f-design
+# design-guide
 
 [English](README.md) | 简体中文
 
-[![Validate](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/validate.yml)
-[![Sync to Gitee](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/f-design/actions/workflows/sync-to-gitee.yml)
-[![Release](https://img.shields.io/github/v/release/GrubbyLee/f-design)](https://github.com/GrubbyLee/f-design/releases)
+[![Validate](https://github.com/GrubbyLee/design-guide/actions/workflows/validate.yml/badge.svg)](https://github.com/GrubbyLee/design-guide/actions/workflows/validate.yml)
+[![Sync to Gitee](https://github.com/GrubbyLee/design-guide/actions/workflows/sync-to-gitee.yml/badge.svg)](https://github.com/GrubbyLee/design-guide/actions/workflows/sync-to-gitee.yml)
+[![Release](https://img.shields.io/github/v/release/GrubbyLee/design-guide)](https://github.com/GrubbyLee/design-guide/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > 面向 Codex、Claude Code、Cursor、Qwen Code 及其他 AI 开发环境的前端设计总控 skill。
 
-`f-design` 不是又一个 UI 风格预设，而是一个前端设计与生产工程总控 skill：它帮助 AI 编程助手理解仓库、判断并呈现设计方向、锁定可执行契约、完成实现，并在交付前验证行为与质量。
+`design-guide` 不是又一个 UI 风格预设，而是一个前端设计与生产工程总控 skill：它帮助 AI 编程助手理解仓库、判断并呈现设计方向、锁定可执行契约、完成实现，并在交付前验证行为与质量。
 
 当前版本：**v0.1.1**。不同环境的“已安装、已同步、模型实际调用”证据分开记录在 [AIDE 兼容性报告](COMPATIBILITY.zh-CN.md) 中。
 
@@ -49,70 +49,70 @@
 安装到 Codex：
 
 ```bash
-git clone https://github.com/GrubbyLee/f-design.git ~/.codex/skills/f-design
+git clone https://github.com/GrubbyLee/design-guide.git ~/.codex/skills/design-guide
 ```
 
 将同一 skill 同步到 Codex、Claude Code、Cursor、Qwen Code 的本地 skill 目录：
 
 ```bash
-bash ~/.codex/skills/f-design/scripts/sync-aide.sh
-python3 ~/.codex/skills/f-design/scripts/f-design-doctor.py --strict
+bash ~/.codex/skills/design-guide/scripts/sync-aide.sh
+python3 ~/.codex/skills/design-guide/scripts/design-guide-doctor.py --strict
 ```
 
-目标 `f-design` 目录按受管理镜像处理：同步会删除过期文件，同时排除 `.git`、`.codex`、Python 缓存和私有 `.f-design/profile.md`。
+目标 `design-guide` 目录按受管理镜像处理：同步会删除过期文件，同时排除 `.git`、`.codex`、Python 缓存和私有 `.design-guide/profile.md`。
 
 同步目标如下；若源目录本身就是某个目标，该目标会自动跳过：
 
 ```text
-~/.codex/skills/f-design
-~/.claude/skills/f-design
-~/.cursor/skills/f-design
-~/.qwen/skills/f-design
+~/.codex/skills/design-guide
+~/.claude/skills/design-guide
+~/.cursor/skills/design-guide
+~/.qwen/skills/design-guide
 ```
 
 ## 调用方式
 
-不同 AIDE 的 skill 调用语法不完全一致。最通用的方式是：要求 agent 使用 `f-design`。
+不同 AIDE 的 skill 调用语法不完全一致。最通用的方式是：要求 agent 使用 `design-guide`。
 
 | 环境 | 推荐调用 |
 |---|---|
-| Codex | `use f-design`、`f-design`、`$f-design`，或界面支持时用 `@f-design` |
-| Claude Code | 安装为 Claude skill 后用 `/f-design`，或直接说 `use f-design` |
-| Cursor | 说 `use f-design`，或让 agent 读取 `SKILL.md` |
-| Qwen Code | 说 `use f-design`，或让 agent 读取 `SKILL.md` |
-| 其他 AIDE | 让 agent 读取 `SKILL.md` 并遵循 `f-design` |
+| Codex | `use design-guide`、`design-guide`、`$design-guide`，或界面支持时用 `@design-guide` |
+| Claude Code | 安装为 Claude skill 后用 `/design-guide`，或直接说 `use design-guide` |
+| Cursor | 说 `use design-guide`，或让 agent 读取 `SKILL.md` |
+| Qwen Code | 说 `use design-guide`，或让 agent 读取 `SKILL.md` |
+| 其他 AIDE | 让 agent 读取 `SKILL.md` 并遵循 `design-guide` |
 
 ## 模式一：导航
 
 当你只输入：
 
 ```text
-f-design
+design-guide
 ```
 
 agent 不应该直接写代码，而应该列出可用前端能力，例如：
 
 ```text
-f-design is ready. Pick a frontend task:
+design-guide is ready. Pick a frontend task:
 
 1. Build a product screen / dashboard / tool
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-engineer, webapp-testing
 
 2. Improve visual taste of an existing page
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: design-taste-frontend, web-design-guidelines
 
 3. Evaluate an existing product/page design / 评估已有产品或页面设计
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
 
 4. Add complex animation
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: gsap, animejs
 
 5. Build 3D / WebGL
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: three
 ```
 
@@ -121,13 +121,13 @@ f-design is ready. Pick a frontend task:
 当你给出具体任务：
 
 ```text
-使用 f-design 帮我做一个用于审核生成媒体的创作者后台。
+使用 design-guide 帮我做一个用于审核生成媒体的创作者后台。
 ```
 
 也可以要求它评估已有产品设计：
 
 ```text
-使用 f-design 评估这个已有仪表盘设计，并给出按优先级排列的改良报告。
+使用 design-guide 评估这个已有仪表盘设计，并给出按优先级排列的改良报告。
 输入：<URL/截图/HTML/仓库路径>
 输出：评分表、优点、问题、可执行改动、验收标准。
 ```
@@ -155,13 +155,13 @@ Agent 应该按这个流程推进：
 
 ## 偏好文件
 
-`f-design` 把开源默认规则与个人/项目偏好分离。
+`design-guide` 把开源默认规则与个人/项目偏好分离。
 
 读取顺序：
 
 ```text
-1. 当前项目的 .f-design/profile.md
-2. 本机的 ~/.f-design/preferences.md
+1. 当前项目的 .design-guide/profile.md
+2. 本机的 ~/.design-guide/preferences.md
 3. skill 自带的 references/design-defaults.md
 ```
 
@@ -185,8 +185,8 @@ python3 scripts/inspect-project.py . --format markdown
 创建并校验可执行设计契约：
 
 ```bash
-python3 scripts/design-contract.py init --out .codex/f-design/design-contract.json
-python3 scripts/design-contract.py validate .codex/f-design/design-contract.json --project-root . --require-approved
+python3 scripts/design-contract.py init --out .codex/design-guide/design-contract.json
+python3 scripts/design-contract.py validate .codex/design-guide/design-contract.json --project-root . --require-approved
 ```
 
 启动、检查并停止真实应用预览：
@@ -201,7 +201,7 @@ python3 scripts/run-preview.py stop
 
 ```bash
 python3 scripts/verify-ui.py http://127.0.0.1:3000 \
-  --contract .codex/f-design/design-contract.json --project-root .
+  --contract .codex/design-guide/design-contract.json --project-root .
 ```
 
 将当前截图与视觉基线比较：
@@ -247,7 +247,7 @@ bash scripts/sync-aide.sh
 检查四个 AIDE 的版本、必需文件和公开文件摘要：
 
 ```bash
-python3 scripts/f-design-doctor.py --strict
+python3 scripts/design-guide-doctor.py --strict
 ```
 
 显式运行真实模型调用冒烟测试（可能消耗模型额度）：
@@ -266,7 +266,7 @@ python3 scripts/verify-product-journeys.py
 
 ```bash
 python3 scripts/present-design.py --locale zh-CN --help
-F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+F_DESIGN_LOCALE=zh-CN python3 scripts/design-guide-doctor.py
 ```
 
 根据 Scope Gate 契约评估一次真实 agent 输出：
@@ -284,7 +284,7 @@ python3 scripts/evaluate-review-output.py \
 ├── SKILL.md
 ├── SKILL.zh-CN.md
 ├── VERSION
-├── f-design.json
+├── design-guide.json
 ├── CHANGELOG.md
 ├── CHANGELOG.zh-CN.md
 ├── COMPATIBILITY.md
@@ -322,7 +322,7 @@ python3 scripts/evaluate-review-output.py \
 │   ├── check-secrets.py
 │   ├── design-contract.py
 │   ├── evaluate-review-output.py
-│   ├── f-design-doctor.py
+│   ├── design-guide-doctor.py
 │   ├── detect-frontend-env.sh
 │   ├── present-design.py
 │   ├── inspect-project.py
@@ -367,14 +367,14 @@ GitHub `validate.yml` 还会对测试契约执行严格浏览器质量任务，�
 
 ## 版本与发布
 
-当前版本同时记录在 `VERSION` 与 `f-design.json`。变更记录见 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)，本次发布摘要见 [RELEASE_NOTES.zh-CN.md](RELEASE_NOTES.zh-CN.md)，安全升级步骤见 [UPGRADING.zh-CN.md](UPGRADING.zh-CN.md)。真实 AIDE 模型调用可能消耗外部额度，因此作为独立检查明确报告，不与本地安装和同步混为一谈。
+当前版本同时记录在 `VERSION` 与 `design-guide.json`。变更记录见 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)，本次发布摘要见 [RELEASE_NOTES.zh-CN.md](RELEASE_NOTES.zh-CN.md)，安全升级步骤见 [UPGRADING.zh-CN.md](UPGRADING.zh-CN.md)。真实 AIDE 模型调用可能消耗外部额度，因此作为独立检查明确报告，不与本地安装和同步混为一谈。
 
 ## Gitee 镜像
 
 本仓库配置了将 `main` 和 tags 同步到：
 
 ```text
-https://gitee.com/synovation/f-design
+https://gitee.com/synovation/design-guide
 ```
 
 同步 workflow 需要 GitHub 仓库 Secrets：

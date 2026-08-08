@@ -1,6 +1,6 @@
 # Internationalization Contract
 
-f-design separates language used to instruct an AIDE from language used by its command-line helpers.
+design-guide separates language used to instruct an AIDE from language used by its command-line helpers.
 
 ## Supported locales
 
@@ -40,7 +40,7 @@ Run:
 ```bash
 python3 -m unittest discover -s tests -q
 python3 scripts/present-design.py --locale zh-CN --help
-F_DESIGN_LOCALE=zh-CN python3 scripts/f-design-doctor.py
+F_DESIGN_LOCALE=zh-CN python3 scripts/design-guide-doctor.py
 ```
 
 Do not use locale-dependent text as a contract identifier, fixture key, JSON field name, route, selector, or filesystem path.

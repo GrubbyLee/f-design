@@ -15,10 +15,10 @@ Request tool approval when opening a browser requires it. Do not silently skip t
 
 ## Open Standalone HTML
 
-Resolve the script path relative to the loaded `f-design` skill directory. Pass every direction in one invocation:
+Resolve the script path relative to the loaded `design-guide` skill directory. Pass every direction in one invocation:
 
 ```bash
-python3 <f-design-skill-dir>/scripts/present-design.py open \
+python3 <design-guide-skill-dir>/scripts/present-design.py open \
   ".codex/design/<design-id>/direction-a.html" \
   ".codex/design/<design-id>/direction-b.html"
 ```
@@ -30,7 +30,7 @@ The command opens each artifact in a browser tab and exits. It always prints abs
 Use HTTP only when modules, fetch calls, routing, or browser security rules prevent `file://` operation. The command starts a managed background process and returns:
 
 ```bash
-python3 <f-design-skill-dir>/scripts/present-design.py serve \
+python3 <design-guide-skill-dir>/scripts/present-design.py serve \
   ".codex/design/<design-id>/direction-a.html" \
   ".codex/design/<design-id>/direction-b.html"
 ```
@@ -38,8 +38,8 @@ python3 <f-design-skill-dir>/scripts/present-design.py serve \
 Manage the server from the project root:
 
 ```bash
-python3 <f-design-skill-dir>/scripts/present-design.py status
-python3 <f-design-skill-dir>/scripts/present-design.py stop
+python3 <design-guide-skill-dir>/scripts/present-design.py status
+python3 <design-guide-skill-dir>/scripts/present-design.py stop
 ```
 
 The server binds only to loopback, records state under `.codex/design/presentation.json`, and serves multiple artifacts from one directory. Stop it after review unless the approved implementation still needs it. If the project already has a development server, open its host-accessible URL instead.

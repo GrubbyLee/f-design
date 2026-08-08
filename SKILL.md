@@ -1,6 +1,6 @@
 ---
-name: f-design
-description: Frontend design and production engineering orchestrator that inventories projects, scales design depth, presents review artifacts, locks executable contracts, implements accessible responsive interfaces, and verifies interactions, visual regressions, and performance. Use when the user invokes f-design, @f-design, /f-design, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, production frontend quality, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
+name: design-guide
+description: Frontend design and production engineering orchestrator that inventories projects, scales design depth, presents review artifacts, locks executable contracts, implements accessible responsive interfaces, and verifies interactions, visual regressions, and performance. Use when the user invokes design-guide, @design-guide, /design-guide, asks for frontend design/development/redesign, web app UI, dashboard, tool interface, landing page, responsive React/HTML/CSS work, design previews or choices, screenshot QA, production frontend quality, or says they are dissatisfied with generic AI-looking UI. If invoked without a concrete task, enter navigation mode and recommend the best available frontend-related skills/tools for the user's environment instead of coding.
 ---
 
 # F Design
@@ -28,8 +28,8 @@ Read only the references required by the task:
 
 Before substantial work, look for preference files in this order:
 
-1. `.f-design/profile.md` in the current project.
-2. `~/.f-design/preferences.md` on the local machine.
+1. `.design-guide/profile.md` in the current project.
+2. `~/.design-guide/preferences.md` on the local machine.
 3. `references/design-defaults.md` bundled with this skill.
 
 Read only the files that exist and are relevant. Project and local files override bundled defaults. Keep personal preferences out of the skill folder so the skill remains open-source friendly.
@@ -38,7 +38,7 @@ Read only the files that exist and are relevant. Project and local files overrid
 
 ### Mode 1: Navigation
 
-Use this mode when the user only says `f-design`, `@f-design`, `/f-design`, "use f-design", or otherwise gives no concrete frontend task.
+Use this mode when the user only says `design-guide`, `@design-guide`, `/design-guide`, "use design-guide", or otherwise gives no concrete frontend task.
 
 Reply with a concise menu of what the environment can do. Do not code. Do not invent unavailable skills.
 
@@ -51,26 +51,26 @@ Reply with a concise menu of what the environment can do. Do not code. Do not in
 Navigation output should look like:
 
 ```text
-f-design is ready. Pick a frontend task:
+design-guide is ready. Pick a frontend task:
 
 1. Build a product screen / dashboard / tool
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-engineer, webapp-testing
 
 2. Improve visual taste of an existing page
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: design-taste-frontend, web-design-guidelines
 
 3. Evaluate an existing product/page design
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: web-design-guidelines, webapp-testing, design-taste-frontend
 
 4. Add complex animation
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: gsap, animejs
 
 5. Build 3D / WebGL
-   Primary: f-design
+   Primary: design-guide
    Helpers if available: three
 ```
 
@@ -108,13 +108,13 @@ Load one specialized review template when the artifact requires it:
 
 ## AIDE Compatibility
 
-Treat `f-design` as tool-neutral.
+Treat `design-guide` as tool-neutral.
 
-- Codex: invoke with "use f-design", `f-design`, `$f-design`, or `@f-design` if the UI supports mentions.
-- Claude Code: invoke with `/f-design` when the skill is installed in the Claude skill directory; natural language "use f-design" is the fallback.
-- Cursor: invoke by asking the agent to use `f-design` or by pointing it at this `SKILL.md`; if Cursor skill discovery is configured, install this folder under Cursor's skill directory.
-- Qwen Code: invoke by asking the agent to use `f-design`; if Qwen skill discovery is configured, install this folder under Qwen's skill directory.
-- Other AIDE: use the same folder as a portable skill; if the tool has no skill protocol, tell the agent to read `SKILL.md` and follow `f-design`.
+- Codex: invoke with "use design-guide", `design-guide`, `$design-guide`, or `@design-guide` if the UI supports mentions.
+- Claude Code: invoke with `/design-guide` when the skill is installed in the Claude skill directory; natural language "use design-guide" is the fallback.
+- Cursor: invoke by asking the agent to use `design-guide` or by pointing it at this `SKILL.md`; if Cursor skill discovery is configured, install this folder under Cursor's skill directory.
+- Qwen Code: invoke by asking the agent to use `design-guide`; if Qwen skill discovery is configured, install this folder under Qwen's skill directory.
+- Other AIDE: use the same folder as a portable skill; if the tool has no skill protocol, tell the agent to read `SKILL.md` and follow `design-guide`.
 
 For local setup details, read `references/aide-integration.md` only when the user asks about installing, syncing, or using this skill in another AIDE.
 
@@ -216,7 +216,7 @@ For operational tools, admin panels, creator dashboards, and editors, prefer den
 
 For approved Level 2 work, include the chosen page structure, responsive behavior, critical states, accepted tradeoffs, and rejected directions in the design contract. If review artifacts used provisional visual tokens, replace them with the approved system.
 
-For approved Level 2 work or any substantial multi-state, multi-route implementation, read `references/implementation-contract.md`, create `.codex/f-design/design-contract.json`, and validate it with `scripts/design-contract.py validate <contract> --require-approved` before coding. Do not mark a contract approved without user-reviewed artifact evidence.
+For approved Level 2 work or any substantial multi-state, multi-route implementation, read `references/implementation-contract.md`, create `.codex/design-guide/design-contract.json`, and validate it with `scripts/design-contract.py validate <contract> --require-approved` before coding. Do not mark a contract approved without user-reviewed artifact evidence.
 
 ### 7. Build the approved v0
 
@@ -265,7 +265,7 @@ After implementation, read `references/quality-gates.md`. For substantial work, 
 
 ```bash
 python3 scripts/verify-ui.py http://127.0.0.1:3000 \
-  --contract .codex/f-design/design-contract.json \
+  --contract .codex/design-guide/design-contract.json \
   --project-root .
 ```
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 144" role="img" aria-labelledby="title desc">
-  <title id="title">f-design</title>
-  <desc id="desc">Three nested interface rails express f-design's Level 0, Level 1, and Level 2 design depths.</desc>
+  <title id="title">design-guide</title>
+  <desc id="desc">Three nested interface rails express design-guide's Level 0, Level 1, and Level 2 design depths.</desc>
   <g transform="translate(10 8)">
     <path d="M10 12H118V32H30V116H10Z" fill="#2F43D3"/>
     <path d="M38 44H118V64H58V116H38Z" fill="#161A22"/>

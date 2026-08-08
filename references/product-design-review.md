@@ -152,7 +152,7 @@ Use those checks as evidence, not taste absolutism. A pattern is a problem only 
    - Low-cost fix: can usually be implemented without changing IA or core components.
    - Medium improvement: requires layout, component, state, or content restructuring.
    - Structural redesign: requires design artifact presentation, confirmation, implementation contract, and QA.
-8. If the user asks for redesign or implementation, continue through the normal f-design design-depth, artifact presentation, confirmation, contract, implementation, and QA gates.
+8. If the user asks for redesign or implementation, continue through the normal design-guide design-depth, artifact presentation, confirmation, contract, implementation, and QA gates.
 
 ## Before/After Comparison
 
